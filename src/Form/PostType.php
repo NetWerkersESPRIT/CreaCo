@@ -23,7 +23,9 @@ class PostType extends AbstractType
             ->add('updatedAt', null, [
                 'widget' => 'single_text',
             ])
-            ->add('pinned')
+          ->add('pinned', null, [
+                'required' => false, 
+            ])
             ->add('user', EntityType::class, [
                 'class' => Users::class,
                 'choice_label' => 'id',
