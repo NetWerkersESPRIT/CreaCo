@@ -11,7 +11,7 @@ final class ForumController extends AbstractController
     #[Route('/forum', name: 'app_forum')]
     public function index(): Response
     {
-        return $this->render('forum/index.html.twig', [
+        return $this->render('pages/tables.html.twig', [
             'controller_name' => 'ForumController',
         ]);
     }
