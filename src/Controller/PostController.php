@@ -23,21 +23,31 @@ final class PostController extends AbstractController
     }
 
     #[Route('/new', name: 'app_post_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    public function new(Request $request, EntityManagerInterface $em): Response
     {
         $post = new Post();
         $form = $this->createForm(PostType::class, $post);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->persist($post);
-            $entityManager->flush();
+            $now = new \DateTimeImmutable();
+            $post->setCreatedAt($now);
+            $post->setUpdatedAt($now);
+            $post->setUser($this->getUser());
+            if ($post->getStatus() === null) {
+                $post->setStatus('published');
+            }
+            if ($post->isPinned() === null) {
+                $post->setPinned(false);
+            }
 
-            return $this->redirectToRoute('app_post_index', [], Response::HTTP_SEE_OTHER);
+            $em->persist($post);
+            $em->flush();
+
+            return $this->redirectToRoute('app_post_index');
         }
 
         return $this->render('post/new.html.twig', [
-            'post' => $post,
             'form' => $form,
         ]);
     }
@@ -51,31 +61,33 @@ final class PostController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'app_post_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Post $post, EntityManagerInterface $entityManager): Response
+    public function edit(Request $request, Post $post, EntityManagerInterface $em): Response
     {
         $form = $this->createForm(PostType::class, $post);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
+            $post->setUpdatedAt(new \DateTimeImmutable());
 
-            return $this->redirectToRoute('app_post_index', [], Response::HTTP_SEE_OTHER);
+            $em->flush();
+
+            return $this->redirectToRoute('app_post_index');
         }
 
         return $this->render('post/edit.html.twig', [
-            'post' => $post,
             'form' => $form,
+            'post' => $post,
         ]);
     }
 
     #[Route('/{id}', name: 'app_post_delete', methods: ['POST'])]
-    public function delete(Request $request, Post $post, EntityManagerInterface $entityManager): Response
+    public function delete(Request $request, Post $post, EntityManagerInterface $em): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$post->getId(), $request->getPayload()->getString('_token'))) {
-            $entityManager->remove($post);
-            $entityManager->flush();
+        if ($this->isCsrfTokenValid('delete'.$post->getId(), $request->request->get('_token'))) {
+            $em->remove($post);
+            $em->flush();
         }
 
-        return $this->redirectToRoute('app_post_index', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('app_post_index');
     }
 }
