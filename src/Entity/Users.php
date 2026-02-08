@@ -3,8 +3,6 @@
 namespace App\Entity;
 
 use App\Repository\UsersRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -35,6 +33,8 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 20, nullable: true)]
     private ?string $numtel = null;
 
+<<<<<<< HEAD
+=======
     #[ORM\Column(nullable: true)]
     private ?int $managerId = null;
 
@@ -87,6 +87,7 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
         $this->addedCollaborators = new ArrayCollection();
     }
 
+>>>>>>> main
     public function getId(): ?int
     {
         return $this->id;
@@ -189,6 +190,8 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
+<<<<<<< HEAD
+=======
 
     public function getManagerId(): ?int
     {
@@ -390,4 +393,5 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
         }
         return $this;
     }
+>>>>>>> main
 }

@@ -6,6 +6,7 @@ namespace App\Entity;
 use App\Repository\PostRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -36,11 +37,16 @@ class Post
     )]
     private ?string $status = "published";
 
-    #[ORM\Column]
-    private ?\DateTimeImmutable $createdAt = null;
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    private ?\DateTimeInterface $created_at = null;
 
+<<<<<<< HEAD
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    private ?\DateTimeInterface $updated_at = null;
+=======
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $updatedAt = null;
+>>>>>>> main
 
     #[ORM\Column(options: ["default" => false])]
     private ?bool $pinned = false;
@@ -52,8 +58,13 @@ class Post
     #[ORM\OneToOne(targetEntity: Comment::class, cascade: ['persist', 'remove'])]
     private ?Comment $solution = null;
 
+<<<<<<< HEAD
+    #[ORM\ManyToOne(targetEntity: Users::class)]
+    #[ORM\JoinColumn(name: "user_id", referencedColumnName: "id")]
+=======
     #[ORM\ManyToOne(inversedBy: 'posts')]
     #[ORM\JoinColumn(nullable: true)]
+>>>>>>> main
     private ?Users $user = null;
 
 
@@ -79,8 +90,13 @@ class Post
     public function __construct()
     {
         $this->comments = new ArrayCollection();
+<<<<<<< HEAD
+        $this->created_at = new \DateTime();
+        $this->updated_at = new \DateTime();
+=======
         $this->createdAt = new \DateTimeImmutable(); 
         $this->likes = 0;
+>>>>>>> main
     }
 
     public function getId(): ?int
@@ -110,27 +126,38 @@ class Post
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeImmutable
+    public function getCreatedAt(): ?\DateTimeInterface
     {
-        return $this->createdAt;
+        return $this->created_at;
     }
 
-    public function setCreatedAt(\DateTimeImmutable $createdAt): static
+    public function setCreatedAt(\DateTimeInterface $created_at): static
     {
+<<<<<<< HEAD
+        $this->created_at = $created_at;
+
+=======
         $this->createdAt = $createdAt;
+>>>>>>> main
         return $this;
     }
 
-    public function getUpdatedAt(): ?\DateTimeImmutable
+    public function getUpdatedAt(): ?\DateTimeInterface
     {
-        return $this->updatedAt;
+        return $this->updated_at;
     }
 
+<<<<<<< HEAD
+    public function setUpdatedAt(\DateTimeInterface $updated_at): static
+    {
+        $this->updated_at = $updated_at;
+=======
     public function setUpdatedAt(?\DateTimeImmutable $updatedAt): static
     {
         $this->updatedAt = $updatedAt;
         return $this;
     }
+>>>>>>> main
 
     public function getContent(): ?string
     {
