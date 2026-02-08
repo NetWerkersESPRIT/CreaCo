@@ -189,6 +189,7 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
+
     public function getManagerId(): ?int
     {
         return $this->managerId;
@@ -197,6 +198,7 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
     public function setManagerId(?int $managerId): static
     {
         $this->managerId = $managerId;
+
         return $this;
     }
 
@@ -208,6 +210,7 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
     public function setCreatorId(?int $creatorId): static
     {
         $this->creatorId = $creatorId;
+
         return $this;
     }
 

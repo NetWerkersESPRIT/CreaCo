@@ -40,7 +40,7 @@ final class UsersController extends AbstractController
                 if ($creator) {
                     $user->setCreatorId($creator->getId());
                 }
-            } elseif ($role === 'ROLE_USER') {
+            } elseif ($role === 'ROLE_CREATOR') {
                 $manager = $form->get('managerSelection')->getData();
                 if ($manager) {
                     $user->setManagerId($manager->getId());

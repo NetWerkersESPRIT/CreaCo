@@ -124,63 +124,70 @@ final class PostController extends AbstractController
         $commentForm = $this->createForm(CommentType::class, $comment);
         $commentForm->handleRequest($request);
 
-        if ($commentForm->isSubmitted() && $commentForm->isValid()) {
-            $comment->setPost($post);
-            
-            $parentId = $request->request->get('parent_id');
-            if ($parentId) {
-                $parentComment = $em->getRepository(Comment::class)->find($parentId);
-                if ($parentComment) {
-                    $comment->setParentComment($parentComment);
+        if ($commentForm->isSubmitted()) {
+            if ($commentForm->isValid()) {
+                $comment->setPost($post);
+                
+                $parentId = $request->request->get('parent_id');
+                if ($parentId) {
+                    $parentComment = $em->getRepository(Comment::class)->find($parentId);
+                    if ($parentComment) {
+                        $comment->setParentComment($parentComment);
+                    }
                 }
+
+                if ($this->getUser()) {
+                    $comment->setUser($this->getUser());
+                }
+
+                $now = new \DateTimeImmutable();
+                $comment->setCreatedAt($now);
+                $comment->setUpdatedAt($now);
+                $comment->setStatus('visible');
+                $comment->setLikes(0);
+
+                $em->persist($comment);
+                $em->flush();
+
+                $this->addFlash('success', 'Votre commentaire a été ajouté !');
+
+                return $this->redirectToRoute('forum_show', ['id' => $post->getId()]);
             }
-
-            if ($this->getUser()) {
-                 $comment->setUser($this->getUser());
-            }
-
-            $now = new \DateTimeImmutable();
-            $comment->setCreatedAt($now);
-            $comment->setUpdatedAt($now);
-            $comment->setStatus('visible');
-            $comment->setLikes(0);
-
-            $em->persist($comment);
-            $em->flush();
-
-            $this->addFlash('success', 'Votre commentaire a été ajouté !');
-
-            return $this->redirectToRoute('forum_show', ['id' => $post->getId()]);
         }
 
-        if ($request->isMethod('POST') && $request->request->get('comment_body')) {
+        // Handle manual reply (nested)
+        if ($request->isMethod('POST') && $request->request->has('comment_body')) {
             $body = $request->request->get('comment_body');
             $parentId = $request->request->get('parent_id');
 
-            $reply = new Comment();
-            $reply->setBody($body);
-            $reply->setPost($post);
-            
-            if ($this->getUser()) {
-                $reply->setUser($this->getUser());
-            }
-
-            if ($parentId) {
-                $parentComment = $em->getRepository(Comment::class)->find($parentId);
-                if ($parentComment) {
-                    $reply->setParentComment($parentComment);
+            if (empty(trim($body))) {
+                $this->addFlash('warning', 'Le contenu du commentaire ne peut pas être vide.');
+            } else {
+                $reply = new Comment();
+                $reply->setBody($body);
+                $reply->setPost($post);
+                
+                if ($this->getUser()) {
+                    $reply->setUser($this->getUser());
                 }
+
+                if ($parentId) {
+                    $parentComment = $em->getRepository(Comment::class)->find($parentId);
+                    if ($parentComment) {
+                        $reply->setParentComment($parentComment);
+                    }
+                }
+
+                $reply->setCreatedAt(new \DateTimeImmutable());
+                $reply->setStatus('visible');
+                $reply->setLikes(0);
+
+                $em->persist($reply);
+                $em->flush();
+
+                $this->addFlash('success', 'Votre réponse a été ajoutée !');
+                return $this->redirectToRoute('forum_show', ['id' => $post->getId()]);
             }
-
-            $reply->setCreatedAt(new \DateTimeImmutable());
-            $reply->setStatus('visible');
-            $reply->setLikes(0);
-
-            $em->persist($reply);
-            $em->flush();
-
-            $this->addFlash('success', 'Votre réponse a été ajoutée !');
-            return $this->redirectToRoute('forum_show', ['id' => $post->getId()]);
         }
 
         

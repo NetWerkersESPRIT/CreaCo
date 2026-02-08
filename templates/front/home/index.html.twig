@@ -1,51 +1,187 @@
-{% extends 'front/base.html.twig' %}
+{% extends 'base.html.twig' %}
 
-{% block title %}CreaCo - Explorez nos formations
+{% block title %}Dashboard - CreaCo
 {% endblock %}
 
 {% block body %}
 	<div
-		class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-		<!-- Header Section -->
-		<div class="text-center mb-10">
-			<h1 class="text-4xl md:text-6xl font-extrabold tracking-tight text-gray-900 mb-6">
-				Découvrez nos
-				<span class="gradient-text">Formations</span>
-			</h1>
-			<p class="max-w-2xl mx-auto text-xl text-gray-500 mb-8">
-				Choisissez une catégorie pour explorer les cours et ressources disponibles.
-			</p>
-
-			<form method="get" class="max-w-lg mx-auto relative flex items-center" novalidate>
-				<div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-					<i class="fas fa-search text-gray-400"></i>
+		class="flex flex-wrap -mx-3">
+		<!-- Welcome Header -->
+		<div class="w-full px-3 mb-6">
+			<div class="relative flex flex-col min-w-0 break-words bg-white shadow-soft-xl rounded-2xl bg-clip-border overflow-hidden">
+				<div class="absolute top-0 right-0 w-1/3 h-full opacity-20 bg-gradient-to-tl from-purple-700 to-pink-500 transform skew-x-12 translate-x-10"></div>
+				<div class="flex-auto p-6 md:p-8 relative z-10">
+					<div class="flex flex-wrap items-center">
+						<div class="w-full lg:w-2/3">
+							<h2 class="mb-2 text-3xl font-bold text-slate-700">Explorez votre créativité,
+								<span class="bg-gradient-to-tl from-purple-700 to-pink-500 bg-clip-text text-transparent">{{ app.user ? app.user.username : 'Nouvel Arrivant' }}</span>
+								!</h2>
+							<p class="mb-4 text-slate-500 text-lg">Bienvenue sur votre espace personnel CreaCo. Apprenez, collaborez et progressez avec notre communauté.</p>
+							<div class="flex gap-3">
+								<a href="{{ path('forum_index') }}" class="inline-block px-6 py-3 font-bold text-center text-white uppercase align-middle transition-all bg-transparent border-0 rounded-lg cursor-pointer leading-pro text-xs ease-soft-in shadow-soft-md bg-gradient-to-tl from-purple-700 to-pink-500 hover:scale-102 active:opacity-85">Rejoindre le Forum</a>
+								<a href="{{ path('app_collaborator_index') }}" class="inline-block px-6 py-3 font-bold text-center text-slate-700 uppercase align-middle transition-all bg-white border-2 border-fuchsia-100 rounded-lg cursor-pointer leading-pro text-xs ease-soft-in shadow-soft-xs hover:border-fuchsia-300 hover:scale-102 active:opacity-85">Voir les Collaborateurs</a>
+							</div>
+						</div>
+					</div>
 				</div>
-				<input type="text" name="search" value="{{ search ?? '' }}" class="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-full leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm shadow-md" placeholder="Rechercher une catégorie...">
-			</form>
+			</div>
 		</div>
 
-		<!-- Categories Grid -->
-		<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-			{% for category in categories %}
-				<a href="{{ path('app_front_category', {'id': category.id}) }}" class="group block p-8 rounded-3xl bg-white border border-gray-100 shadow-sm hover:shadow-2xl hover:border-primary/20 transition-all duration-300">
-					<div class="w-14 h-14 gradient-bg rounded-2xl flex items-center justify-center text-white mb-6 group-hover:scale-110 transition-transform shadow-lg">
-						<i class="fas fa-layer-group text-xl"></i>
+		<!-- Stats Cards -->
+		<div class="w-full max-w-full px-3 mb-6 sm:w-1/2 sm:flex-none xl:mb-0 xl:w-1/3">
+			<div class="relative flex flex-col min-w-0 break-words bg-white shadow-soft-xl rounded-2xl bg-clip-border border-b-4 border-fuchsia-500 transition-transform duration-300 hover:-translate-y-1">
+				<div class="flex-auto p-4">
+					<div class="flex flex-row -mx-3">
+						<div class="flex-none w-2/3 max-w-full px-3">
+							<div>
+								<p class="mb-0 font-sans text-sm font-semibold leading-normal">Formations</p>
+								<h5 class="mb-0 font-bold">
+									{{ category_count }}
+									<span class="text-xs leading-normal font-weight-bolder text-purple-600">Disponibles</span>
+								</h5>
+							</div>
+						</div>
+						<div class="px-3 text-right basis-1/3">
+							<div class="inline-block w-12 h-12 text-center rounded-lg bg-gradient-to-tl from-purple-700 to-pink-500 shadow-soft-2xl">
+								<i class="fas fa-graduation-cap text-white text-lg relative top-3"></i>
+							</div>
+						</div>
 					</div>
-					<h3 class="text-xl font-bold text-gray-900 mb-2 group-hover:text-primary transition-colors">{{ category.nom }}</h3>
-					<p class="text-gray-500 text-sm mb-6 line-clamp-2">
-						{{ category.description }}
-					</p>
-					<div class="flex items-center text-primary font-bold text-sm">
-						Voir les cours
-						<i class="fas fa-chevron-right ml-2 text-[10px] group-hover:translate-x-2 transition-transform"></i>
-					</div>
-				</a>
-			{% else %}
-				<div class="col-span-full text-center py-20 bg-gray-50 rounded-3xl border-2 border-dashed border-gray-200">
-					<i class="fas fa-inbox text-4xl text-gray-300 mb-4"></i>
-					<p class="text-gray-500 font-medium">Aucune catégorie disponible pour le moment.</p>
 				</div>
-			{% endfor %}
+			</div>
+		</div>
+
+		<div class="w-full max-w-full px-3 mb-6 sm:w-1/2 sm:flex-none xl:mb-0 xl:w-1/3">
+			<div class="relative flex flex-col min-w-0 break-words bg-white shadow-soft-xl rounded-2xl bg-clip-border border-b-4 border-cyan-500 transition-transform duration-300 hover:-translate-y-1">
+				<div class="flex-auto p-4">
+					<div class="flex flex-row -mx-3">
+						<div class="flex-none w-2/3 max-w-full px-3">
+							<div>
+								<p class="mb-0 font-sans text-sm font-semibold leading-normal">Collaborateurs</p>
+								<h5 class="mb-0 font-bold">
+									48+
+									<span class="text-xs leading-normal font-weight-bolder text-cyan-600">Connectés</span>
+								</h5>
+							</div>
+						</div>
+						<div class="px-3 text-right basis-1/3">
+							<div class="inline-block w-12 h-12 text-center rounded-lg bg-gradient-to-tl from-cyan-600 to-blue-400 shadow-soft-2xl">
+								<i class="fas fa-users text-white text-lg relative top-3"></i>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="w-full max-w-full px-3 mb-6 sm:w-1/2 sm:flex-none xl:mb-0 xl:w-1/3">
+			<div class="relative flex flex-col min-w-0 break-words bg-white shadow-soft-xl rounded-2xl bg-clip-border border-b-4 border-orange-500 transition-transform duration-300 hover:-translate-y-1">
+				<div class="flex-auto p-4">
+					<div class="flex flex-row -mx-3">
+						<div class="flex-none w-2/3 max-w-full px-3">
+							<div>
+								<p class="mb-0 font-sans text-sm font-semibold leading-normal">Discussions</p>
+								<h5 class="mb-0 font-bold">
+									{{ latest_posts|length }}
+									<span class="text-xs leading-normal font-weight-bolder text-orange-600">Nouvelles</span>
+								</h5>
+							</div>
+						</div>
+						<div class="px-3 text-right basis-1/3">
+							<div class="inline-block w-12 h-12 text-center rounded-lg bg-gradient-to-tl from-orange-500 to-yellow-400 shadow-soft-2xl">
+								<i class="fas fa-comment-dots text-white text-lg relative top-3"></i>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
 		</div>
 	</div>
+
+	<div
+		class="flex flex-wrap mt-6 -mx-3">
+		<!-- Forum Activity -->
+		<div class="w-full px-3 lg:w-7/12 mb-6">
+			<div class="relative flex flex-col min-w-0 break-words bg-white shadow-soft-xl rounded-2xl bg-clip-border">
+				<div class="p-4 pb-0 mb-0 bg-white border-0 rounded-t-2xl">
+					<h6 class="font-bold text-slate-700">Dernières Activités Forum</h6>
+					<p class="mb-0 text-sm leading-normal">Retrouvez les derniers sujets de discussion.</p>
+				</div>
+				<div class="flex-auto p-4">
+					<ul class="flex flex-col pl-0 mb-0 rounded-lg">
+						{% for post in latest_posts %}
+							<li class="relative flex justify-between px-4 py-3 mb-2 border-0 rounded-t-lg rounded-xl bg-gray-50 transition-all hover:bg-gray-100">
+								<div class="flex items-center">
+									<div class="flex items-center justify-center w-8 h-8 mr-3 text-white shadow-soft-2xl rounded-lg bg-gradient-to-tl from-purple-700 to-pink-500">
+										<i class="fas fa-pen-fancy text-xs"></i>
+									</div>
+									<div class="flex flex-col">
+										<h6 class="mb-1 text-sm font-semibold leading-normal text-slate-700">{{ post.title|slice(0, 40) }}...</h6>
+										<span class="text-xs leading-tight">Par
+											<span class="font-bold">{{ post.user.username }}</span>
+										</span>
+									</div>
+								</div>
+								<div class="flex flex-col items-end justify-center">
+									<a href="{{ path('forum_show', {'id': post.id}) }}" class="px-3 py-1 mb-0 text-xs font-bold text-center uppercase align-middle transition-all bg-transparent border border-solid rounded-lg shadow-none cursor-pointer leading-pro ease-soft-in border-fuchsia-500 text-fuchsia-500 hover:bg-fuchsia-500 hover:text-white active:bg-fuchsia-500 active:text-white">Consulter</a>
+								</div>
+							</li>
+						{% else %}
+							<li class="p-4 text-center text-slate-500 italic">Aucune activité récente</li>
+						{% endfor %}
+					</ul>
+					<div class="text-center mt-4">
+						<a href="{{ path('forum_index') }}" class="text-sm font-bold bg-gradient-to-tl from-purple-700 to-pink-500 bg-clip-text text-transparent group">
+							Voir tout le forum
+							<i class="fas fa-arrow-right ml-1 text-xs group-hover:translate-x-1 transition-transform"></i>
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Quick Navigation -->
+		<div class="w-full px-3 lg:w-5/12 mb-6">
+			<div class="relative flex flex-col min-w-0 h-full break-words bg-white shadow-soft-xl rounded-2xl bg-clip-border overflow-hidden">
+				<div class="p-4 bg-gradient-to-tl from-slate-700 to-slate-800">
+					<h6 class="text-white font-bold mb-0">Raccourcis Rapides</h6>
+				</div>
+				<div class="flex-auto p-4 flex flex-col gap-3">
+					<a href="{{ path('app_home') }}?search=Web" class="flex items-center p-3 rounded-xl border border-gray-100 hover:border-purple-200 hover:bg-purple-50 transition-all group">
+						<div class="w-10 h-10 rounded-lg bg-purple-100 text-purple-600 flex items-center justify-center mr-3 group-hover:scale-110 transition-transform">
+							<i class="fas fa-laptop-code"></i>
+						</div>
+						<div>
+							<h6 class="mb-0 text-sm font-bold text-slate-700">Développement Web</h6>
+							<p class="mb-0 text-xs text-slate-500">Explorer les technos du web</p>
+						</div>
+					</a>
+					<a href="{{ path('app_home') }}?search=Design" class="flex items-center p-3 rounded-xl border border-gray-100 hover:border-pink-200 hover:bg-pink-50 transition-all group">
+						<div class="w-10 h-10 rounded-lg bg-pink-100 text-pink-600 flex items-center justify-center mr-3 group-hover:scale-110 transition-transform">
+							<i class="fas fa-palette"></i>
+						</div>
+						<div>
+							<h6 class="mb-0 text-sm font-bold text-slate-700">Design & Créativité</h6>
+							<p class="mb-0 text-xs text-slate-500">Apprendre les bases du design</p>
+						</div>
+					</a>
+					<div class="mt-auto p-4 rounded-2xl bg-gradient-to-tl from-purple-700 to-pink-500 text-white relative">
+						<i class="fas fa-lightbulb absolute top-2 right-2 opacity-20 text-4xl"></i>
+						<h6 class="text-white font-bold mb-1">Besoin d'aide ?</h6>
+						<p class="text-xs mb-3 opacity-90">Consultez notre guide de démarrage rapide pour bien débuter.</p>
+						<button class="w-full py-2 bg-white text-purple-700 rounded-lg font-bold text-xs uppercase shadow-soft-md hover:scale-105 transition-all">Lire le guide</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<style>
+		.hover-scale {
+			transition: transform 0.2s;
+		}
+		.hover-scale:hover {
+			transform: scale(1.02);
+		}
+	</style>
 {% endblock %}

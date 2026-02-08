@@ -16,7 +16,11 @@ final class FrontController extends AbstractController
 {   
     // READ LISTE DES CATEGORIES DE COURS
     #[Route('/', name: 'app_home')]
-    public function index(\Symfony\Component\HttpFoundation\Request $request, CategorieCoursRepository $catRepo): Response
+    public function index(
+        \Symfony\Component\HttpFoundation\Request $request, 
+        CategorieCoursRepository $catRepo,
+        \App\Repository\PostRepository $postRepo
+    ): Response
     {
         $search = $request->query->get('search');
         if ($search) {
@@ -25,9 +29,14 @@ final class FrontController extends AbstractController
              $categories = $catRepo->findAll();
         }
 
+        // Dashboard stats
+        $latestPosts = $postRepo->findBy([], ['id' => 'DESC'], 3);
+
         return $this->render('front/home/index.html.twig', [
             'categories' => $categories,
-            'search' => $search
+            'search' => $search,
+            'latest_posts' => $latestPosts,
+            'category_count' => count($categories)
         ]);
     }
 
