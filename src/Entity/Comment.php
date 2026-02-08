@@ -23,7 +23,11 @@ class Comment
 
     #[ORM\Column(length: 50)]
     #[Assert\NotBlank(message: "Le statut est obligatoire.")]
-    private ?string $status = null;
+    #[Assert\Choice(
+        choices: ["visible", "hidden", "solution"],
+        message: "Statut invalide. Choisis: visible, hidden, solution."
+    )]
+    private ?string $status = "visible";
 
     #[ORM\Column]
     #[Assert\PositiveOrZero(message: "Le nombre de likes doit être >= 0.")]
@@ -37,23 +41,21 @@ class Comment
 
     #[ORM\ManyToOne(inversedBy: 'comments')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Assert\NotNull(message: "Le post est obligatoire.")]
     private ?Post $post = null;
 
     #[ORM\ManyToOne(inversedBy: 'comments')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Assert\NotNull(message: "L'utilisateur est obligatoire.")]
     private ?Users $user = null;
 
     // parent comment (reply)
     #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'replies')]
-    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'CASCADE')]
     private ?self $parentComment = null;
 
     /**
      * @var Collection<int, self>
      */
-    #[ORM\OneToMany(targetEntity: self::class, mappedBy: 'parentComment')]
+    #[ORM\OneToMany(targetEntity: self::class, mappedBy: 'parentComment', cascade: ['remove'])]
     private Collection $replies;
 
     public function __construct()

@@ -15,26 +15,9 @@ class CommentType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('body')
-            ->add('status')
-            ->add('likes')
-            ->add('createdAt', null, [
-                'widget' => 'single_text',
-            ])
-            ->add('updatedAt', null, [
-                'widget' => 'single_text',
-            ])
-            ->add('post', EntityType::class, [
-                'class' => Post::class,
-                'choice_label' => 'id',
-            ])
-            ->add('user', EntityType::class, [
-                'class' => Users::class,
-                'choice_label' => 'id',
-            ])
-            ->add('replay', EntityType::class, [
-                'class' => Comment::class,
-                'choice_label' => 'id',
+            ->add('body', \Symfony\Component\Form\Extension\Core\Type\TextareaType::class, [
+                'label' => 'Votre commentaire',
+                'attr' => ['rows' => 3, 'class' => 'form-control', 'placeholder' => 'Écrivez un commentaire...'],
             ])
         ;
     }
