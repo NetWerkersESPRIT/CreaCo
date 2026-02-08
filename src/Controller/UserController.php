@@ -16,7 +16,7 @@ final class UserController extends AbstractController
     public function createuser(Request $request, EntityManagerInterface $em): Response
     {
         $user = new Users();
-        
+
         $form = $this->createForm(UserType::class, $user);
 
         $form->handleRequest($request);
@@ -24,7 +24,7 @@ final class UserController extends AbstractController
 
             $em->persist($user);
             $em->flush();
-            
+
             $user->setGroupId($user->getId());
             $em->flush();
             return $this->redirectToRoute('app_home');
