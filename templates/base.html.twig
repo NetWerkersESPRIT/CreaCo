@@ -51,8 +51,7 @@
               <span class="ml-1 duration-300 opacity-100 pointer-events-none ease-soft">Forum</span>
             </a>
           </li>
-<<<<<<< HEAD
-   <li class="mt-0.5 w-full">
+          <li class="mt-0.5 w-full">
             <a class="py-2.7 {{ app.request.get('_route') == 'app_useradd' ? 'shadow-soft-xl rounded-lg bg-white font-semibold text-slate-700' : '' }} text-sm ease-nav-brand my-0 mx-4 flex items-center whitespace-nowrap px-4 transition-colors" href="{{ path('app_useradd') }}">
               <div class="bg-gradient-to-tl from-purple-700 to-pink-500 shadow-soft-2xl mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-white bg-center stroke-0 text-center xl:p-2.5">
                 <i class="fas fa-user-plus text-white"></i>
@@ -60,10 +59,25 @@
               <span class="ml-1 duration-300 opacity-100 pointer-events-none ease-soft">Inscription</span>
             </a>
           </li>
-=======
-{# Registration link removed per user request or broken route #}
->>>>>>> 78a9c3b07b2e13b54a51633550efb6f465eae808
-{# Sidebar link removed per user request #}
+          {% if not app.user %}
+          <li class="mt-0.5 w-full">
+            <a class="py-2.7 {{ app.request.get('_route') == 'app_login' ? 'shadow-soft-xl rounded-lg bg-white font-semibold text-slate-700' : '' }} text-sm ease-nav-brand my-0 mx-4 flex items-center whitespace-nowrap px-4 transition-colors" href="{{ path('app_login') }}">
+              <div class="bg-gradient-to-tl from-purple-700 to-pink-500 shadow-soft-2xl mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-white bg-center stroke-0 text-center xl:p-2.5">
+                <i class="fas fa-sign-in-alt text-white"></i>
+              </div>
+              <span class="ml-1 duration-300 opacity-100 pointer-events-none ease-soft">Connexion</span>
+            </a>
+          </li>
+          {% else %}
+          <li class="mt-0.5 w-full">
+            <a class="py-2.7 text-sm ease-nav-brand my-0 mx-4 flex items-center whitespace-nowrap px-4 transition-colors" href="{{ path('app_logout') }}">
+              <div class="bg-gradient-to-tl from-red-600 to-orange-400 shadow-soft-2xl mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-white bg-center stroke-0 text-center xl:p-2.5">
+                <i class="fas fa-sign-out-alt text-white"></i>
+              </div>
+              <span class="ml-1 duration-300 opacity-100 pointer-events-none ease-soft">Déconnexion</span>
+            </a>
+          </li>
+          {% endif %}
         </ul>
       </div>
     </aside>
@@ -95,13 +109,22 @@
               </form>
             </div>
             <ul class="flex flex-row justify-end pl-0 mb-0 list-none md-max:w-full">
-              <li class="flex items-center">
+              <li class="flex items-center space-x-2">
                 {% if app.user %}
                   <div class="flex items-center space-x-2 bg-gray-50 px-3 py-1.5 rounded-xl border border-gray-100 shadow-soft-xs">
                     <img src="https://ui-avatars.com/api/?name={{ app.user.username }}&background=cb0c9f&color=fff" class="w-8 h-8 rounded-lg shadow-soft-sm" alt="user profile">
-                    <span class="text-xs font-bold text-slate-700">{{ app.user.username }} <i class="fas fa-check-circle text-purple-500 text-[10px] ml-0.5"></i></span>
-                    <span class="text-[10px] text-slate-400 capitalize px-2 py-0.5 bg-white border border-gray-100 rounded-lg">{{ app.user.role }}</span>
+                    <div class="flex flex-col">
+                      <span class="text-xs font-bold text-slate-700 leading-tight">{{ app.user.username }} <i class="fas fa-check-circle text-purple-500 text-[10px] ml-0.5"></i></span>
+                      <span class="text-[9px] text-slate-400 capitalize">{{ app.user.role }}</span>
+                    </div>
                   </div>
+                  <a href="{{ path('app_logout') }}" class="flex items-center justify-center w-8 h-8 bg-white border border-gray-100 rounded-lg shadow-soft-xs text-red-500 hover:bg-red-50 transition-all duration-200" title="Logout">
+                    <i class="fas fa-sign-out-alt text-xs"></i>
+                  </a>
+                {% else %}
+                  <a href="{{ path('app_login') }}" class="px-4 py-2 text-xs font-bold text-slate-700 uppercase transition-all bg-transparent border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-fuchsia-300">
+                    Sign In
+                  </a>
                 {% endif %}
               </li>
             </ul>

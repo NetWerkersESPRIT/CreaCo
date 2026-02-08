@@ -34,30 +34,16 @@ class Comment
     #[Assert\PositiveOrZero(message: "Le nombre de likes doit être >= 0.")]
     private int $likes = 0;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $created_at = null;
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
+    private ?\DateTimeImmutable $createdAt = null;
 
-<<<<<<< HEAD
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $updated_at = null;
-=======
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $updatedAt = null;
->>>>>>> main
 
     #[ORM\ManyToOne(inversedBy: 'comments')]
     #[ORM\JoinColumn(nullable: false, name: "post_id", referencedColumnName: "id")]
     private ?Post $post = null;
 
-<<<<<<< HEAD
-    #[ORM\ManyToOne(targetEntity: Users::class)]
-    #[ORM\JoinColumn(name: "user_id", referencedColumnName: "id")]
-    private ?Users $user = null;
-
-    #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'replies')]
-    #[ORM\JoinColumn(name: "replay_id", referencedColumnName: "id")]
-    private ?self $replay = null;
-=======
     #[ORM\ManyToOne(inversedBy: 'comments')]
     #[ORM\JoinColumn(nullable: true)]
     private ?Users $user = null;
@@ -66,28 +52,17 @@ class Comment
     #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'replies')]
     #[ORM\JoinColumn(nullable: true, onDelete: 'CASCADE')]
     private ?self $parentComment = null;
->>>>>>> main
 
     /**
      * @var Collection<int, self>
      */
-<<<<<<< HEAD
-    #[ORM\OneToMany(targetEntity: self::class, mappedBy: 'replay')]
-=======
     #[ORM\OneToMany(targetEntity: self::class, mappedBy: 'parentComment', cascade: ['remove'])]
->>>>>>> main
     private Collection $replies;
 
     public function __construct()
     {
-<<<<<<< HEAD
-        $this->replies = new ArrayCollection();
-        $this->created_at = new \DateTime();
-        $this->updated_at = new \DateTime();
-=======
         $this->createdAt = new \DateTimeImmutable();
         $this->replies = new ArrayCollection();
->>>>>>> main
     }
 
     public function getId(): ?int
@@ -128,37 +103,25 @@ class Comment
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeInterface
+    public function getCreatedAt(): ?\DateTimeImmutable
     {
-        return $this->created_at;
+        return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeInterface $created_at): static
+    public function setCreatedAt(\DateTimeImmutable $createdAt): static
     {
-<<<<<<< HEAD
-        $this->created_at = $created_at;
-
-=======
         $this->createdAt = $createdAt;
->>>>>>> main
         return $this;
     }
 
-    public function getUpdatedAt(): ?\DateTimeInterface
+    public function getUpdatedAt(): ?\DateTimeImmutable
     {
-        return $this->updated_at;
+        return $this->updatedAt;
     }
 
-<<<<<<< HEAD
-    public function setUpdatedAt(\DateTimeInterface $updated_at): static
-    {
-        $this->updated_at = $updated_at;
-
-=======
     public function setUpdatedAt(?\DateTimeImmutable $updatedAt): static
     {
         $this->updatedAt = $updatedAt;
->>>>>>> main
         return $this;
     }
 
@@ -207,11 +170,7 @@ class Comment
     {
         if (!$this->replies->contains($reply)) {
             $this->replies->add($reply);
-<<<<<<< HEAD
-            $reply->setReplay($this);
-=======
             $reply->setParentComment($this);
->>>>>>> main
         }
         return $this;
     }
@@ -219,14 +178,8 @@ class Comment
     public function removeReply(self $reply): static
     {
         if ($this->replies->removeElement($reply)) {
-<<<<<<< HEAD
-            // set the owning side to null (unless already changed)
-            if ($reply->getReplay() === $this) {
-                $reply->setReplay(null);
-=======
             if ($reply->getParentComment() === $this) {
                 $reply->setParentComment(null);
->>>>>>> main
             }
         }
         return $this;

@@ -213,14 +213,59 @@
                     {{ form_start(form) }}               
 
                     {% for field in form %}
-                        <div class="mb-4">
-                            {{ form_widget(field) }}
+                        {% if field.vars.name == 'creatorSelection' %}
+                            <div id="creator-selection-block" class="hidden mb-4">
+                                <label class="mb-2 ml-1 font-bold text-xs text-slate-700 uppercase">Select Content Creator</label>
+                                {{ form_widget(field) }}
+                            </div>
+                        {% elseif field.vars.name == 'managerSelection' %}
+                            <div id="manager-selection-block" class="hidden mb-4">
+                                <label class="mb-2 ml-1 font-bold text-xs text-slate-700 uppercase">Select Manager</label>
+                                {{ form_widget(field) }}
+                            </div>
+                        {% elseif field.vars.name == 'role' %}
+                             <div class="mb-4">
+                                <label class="mb-2 ml-1 font-bold text-xs text-slate-700 uppercase">Register as</label>
+                                {{ form_widget(field, {'attr': {'onchange': 'toggleSelectionFields(this.value)'}}) }}
+                            </div>
+                        {% else %}
+                            <div class="mb-4">
+                                {{ form_widget(field) }}
 
-                            {% for error in field.vars.errors %}
-                                <div class="text-red-500 text-sm mt-1">{{ error.message }}</div>
-                            {% endfor %}
-                        </div>
+                                {% for error in field.vars.errors %}
+                                    <div class="text-red-500 text-sm mt-1">{{ error.message }}</div>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
                     {% endfor %}
+                    
+                    <script>
+                        function toggleSelectionFields(role) {
+                            const creatorBlock = document.getElementById('creator-selection-block');
+                            const managerBlock = document.getElementById('manager-selection-block');
+                            
+                            creatorBlock.classList.add('hidden');
+                            managerBlock.classList.add('hidden');
+                            
+                            if (role === 'ROLE_MANAGER') {
+                                creatorBlock.classList.remove('hidden');
+                            } else if (role === 'ROLE_USER') {
+                                managerBlock.classList.remove('hidden');
+                            } else if (role === 'ROLE_EDITOR') {
+                                creatorBlock.classList.remove('hidden');
+                                managerBlock.classList.remove('hidden');
+                            }
+                        }
+                        
+                        // Run on load to set initial state
+                        document.addEventListener('DOMContentLoaded', function() {
+                            const roleSelect = document.querySelector('select[name*="[role]"]');
+                            if (roleSelect) {
+                                toggleSelectionFields(roleSelect.value);
+                            }
+                        });
+                    </script>
+
                         <button type="submit" class="w-full mr-3 inline-block px-6 py-3 font-bold text-center bg-gradient-to-tl from-purple-700 to-pink-500 uppercase align-middle transition-all rounded-lg cursor-pointer leading-pro text-xs ease-soft-in tracking-tight-soft shadow-soft-md bg-150 bg-x-25 hover:scale-102 active:opacity-85 hover:shadow-soft-xs text-white">
                         Sign up</button>
 

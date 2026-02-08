@@ -3,49 +3,73 @@
 namespace App\Controller;
 
 use App\Entity\Users;
-
 use App\Form\UserType;
-
 use App\Form\UsersType;
 use App\Repository\UsersRepository;
-
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-
 final class UsersController extends AbstractController
 {
     #[Route('/user/new', name: 'app_useradd')]
-    public function createuser(Request $request, EntityManagerInterface $em): Response
+    public function createuser(Request $request, EntityManagerInterface $em, \Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface $userPasswordHasher): Response
     {
         $user = new Users();
-
         $form = $this->createForm(UserType::class, $user);
-
         $form->handleRequest($request);
+
         if ($form->isSubmitted() && $form->isValid()) {
+            // encode the plain password
+            $user->setPassword(
+                $userPasswordHasher->hashPassword(
+                    $user,
+                    $form->get('password')->getData()
+                )
+            );
 
             $em->persist($user);
             $em->flush();
 
-            $user->setGroupId($user->getId());
+            // Handle Manager/Creator selection
+            $role = $user->getRole();
+            if ($role === 'ROLE_MANAGER') {
+                $creator = $form->get('creatorSelection')->getData();
+                if ($creator) {
+                    $user->setCreatorId($creator->getId());
+                }
+            } elseif ($role === 'ROLE_USER') {
+                $manager = $form->get('managerSelection')->getData();
+                if ($manager) {
+                    $user->setManagerId($manager->getId());
+                }
+            } elseif ($role === 'ROLE_EDITOR') {
+                $creator = $form->get('creatorSelection')->getData();
+                $manager = $form->get('managerSelection')->getData();
+                if ($creator) {
+                    $user->setCreatorId($creator->getId());
+                }
+                if ($manager) {
+                    $user->setManagerId($manager->getId());
+                }
+            }
+
+            $user->setGroupid($user->getId());
             $em->flush();
-            return $this->redirectToRoute('app_home');
+
+            $this->addFlash('success', 'Votre compte a été créé avec succès ! Vous pouvez maintenant vous connecter.');
+
+            return $this->redirectToRoute('app_login');
         }
 
         return $this->render('user/new.html.twig', [
             'form' => $form->createView(),
         ]);
     }
-}
-=======
-#[Route('/admin/users')]
-class UsersController extends AbstractController
-{
-    #[Route('/', name: 'app_users_index', methods: ['GET'])]
+
+    #[Route('/admin/users', name: 'app_users_index', methods: ['GET'])]
     public function index(UsersRepository $usersRepository): Response
     {
         return $this->render('back/users/index.html.twig', [
@@ -53,7 +77,7 @@ class UsersController extends AbstractController
         ]);
     }
 
-    #[Route('/new', name: 'app_users_new', methods: ['GET', 'POST'])]
+    #[Route('/admin/users/new', name: 'app_users_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $user = new Users();
@@ -73,7 +97,7 @@ class UsersController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_users_show', methods: ['GET'])]
+    #[Route('/admin/users/{id}', name: 'app_users_show', methods: ['GET'], requirements: ['id' => '\d+'])]
     public function show(Users $user): Response
     {
         return $this->render('back/users/show.html.twig', [
@@ -81,7 +105,7 @@ class UsersController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/edit', name: 'app_users_edit', methods: ['GET', 'POST'])]
+    #[Route('/admin/users/{id}/edit', name: 'app_users_edit', methods: ['GET', 'POST'], requirements: ['id' => '\d+'])]
     public function edit(Request $request, Users $user, EntityManagerInterface $entityManager): Response
     {
         $form = $this->createForm(UsersType::class, $user);
@@ -99,7 +123,7 @@ class UsersController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_users_delete', methods: ['POST'])]
+    #[Route('/admin/users/{id}', name: 'app_users_delete', methods: ['POST'], requirements: ['id' => '\d+'])]
     public function delete(Request $request, Users $user, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete'.$user->getId(), $request->request->get('_token'))) {
@@ -110,4 +134,3 @@ class UsersController extends AbstractController
         return $this->redirectToRoute('app_users_index', [], Response::HTTP_SEE_OTHER);
     }
 }
->>>>>>> 78a9c3b07b2e13b54a51633550efb6f465eae808
