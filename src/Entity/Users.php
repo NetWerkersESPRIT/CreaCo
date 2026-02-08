@@ -3,10 +3,14 @@
 namespace App\Entity;
 
 use App\Repository\UsersRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity(repositoryClass: UsersRepository::class)]
-class Users
+class Users implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -17,7 +21,7 @@ class Users
     private ?string $username = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $address = null;
+    private ?string $email = null;
 
     #[ORM\Column(length: 255)]
     private ?string $password = null;
@@ -30,6 +34,24 @@ class Users
 
     #[ORM\Column(length: 20, nullable: true)]
     private ?string $numtel = null;
+
+    /**
+     * @var Collection<int, Post>
+     */
+    #[ORM\OneToMany(targetEntity: Post::class, mappedBy: 'user', cascade: ['remove'])]
+    private Collection $posts;
+
+    /**
+     * @var Collection<int, Comment>
+     */
+    #[ORM\OneToMany(targetEntity: Comment::class, mappedBy: 'user', cascade: ['remove'])]
+    private Collection $comments;
+
+    public function __construct()
+    {
+        $this->posts = new ArrayCollection();
+        $this->comments = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -48,14 +70,40 @@ class Users
         return $this;
     }
 
-    public function getAddress(): ?string
+    /**
+     * @see UserInterface
+     */
+    public function getUserIdentifier(): string
     {
-        return $this->address;
+        return (string) $this->username;
     }
 
-    public function setAddress(string $address): static
+    /**
+     * @see UserInterface
+     */
+    public function getRoles(): array
     {
-        $this->address = $address;
+        $roles = [$this->role ?: 'ROLE_USER'];
+
+        return array_unique($roles);
+    }
+
+    /**
+     * @see UserInterface
+     */
+    public function eraseCredentials(): void
+    {
+        
+    }
+
+    public function getEmail(): ?string
+    {
+        return $this->email;
+    }
+
+    public function setEmail(string $email): static
+    {
+        $this->email = $email;
 
         return $this;
     }
@@ -104,6 +152,66 @@ class Users
     public function setNumtel(?string $numtel): static
     {
         $this->numtel = $numtel;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Post>
+     */
+    public function getPosts(): Collection
+    {
+        return $this->posts;
+    }
+
+    public function addPost(Post $post): static
+    {
+        if (!$this->posts->contains($post)) {
+            $this->posts->add($post);
+            $post->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removePost(Post $post): static
+    {
+        if ($this->posts->removeElement($post)) {
+            
+            if ($post->getUser() === $this) {
+                $post->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Comment>
+     */
+    public function getComments(): Collection
+    {
+        return $this->comments;
+    }
+
+    public function addComment(Comment $comment): static
+    {
+        if (!$this->comments->contains($comment)) {
+            $this->comments->add($comment);
+            $comment->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeComment(Comment $comment): static
+    {
+        if ($this->comments->removeElement($comment)) {
+            
+            if ($comment->getUser() === $this) {
+                $comment->setUser(null);
+            }
+        }
 
         return $this;
     }

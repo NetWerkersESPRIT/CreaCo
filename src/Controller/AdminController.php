@@ -30,14 +30,15 @@ final class AdminController extends AbstractController
         ]);
     }
 
-    #[Route('/users/{id}', name: 'app_user_delete', methods: ['POST'])]
-    public function delete(Request $request, UsersRepository $user, EntityManagerInterface $em
-    ): Response {
-        if ($this->isCsrfTokenValid('delete' . $user->getId(), $request->request->get('_token'))) {
+    #[Route('/user/delete/{id}', name: 'user_delete')]
+    public function delete( int $id, EntityManagerInterface $em,  UsersRepository $repo): Response {
+        $user = $repo->find($id);
+
+        if ($user) {
             $em->remove($user);
             $em->flush();
         }
 
-        return $this->redirectToRoute('app_user_index');
+        return $this->redirectToRoute('app_admin');
     }
 }

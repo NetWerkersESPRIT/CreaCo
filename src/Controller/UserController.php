@@ -27,7 +27,7 @@ final class UserController extends AbstractController
             
             $user->setGroupId($user->getId());
             $em->flush();
-            return $this->redirectToRoute('app_home');
+            return $this->redirectToRoute('app_useradd');
         }
 
         return $this->render('user/new.html.twig', [

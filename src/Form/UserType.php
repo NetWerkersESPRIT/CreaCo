@@ -34,15 +34,15 @@ class UserType extends AbstractType
                 
                 ])
 
-            ->add('address' , TextType::class, [
+            ->add('email' , TextType::class, [
                 'label' => false,
                 'attr' => [
-                    'placeholder' => 'Address',  
+                    'placeholder' => 'Email',  
                     'class' => 'mb-4 text-sm focus:shadow-soft-primary-outline leading-5.6 ease-soft block w-full appearance-none rounded-lg border border-solid border-gray-300 bg-white bg-clip-padding py-2 px-3 font-normal text-gray-700 transition-all focus:border-fuchsia-300 focus:bg-white focus:text-gray-700 focus:outline-none focus:transition-shadow'
                 ],
                 'constraints' => [
                     new Assert\NotBlank([
-                        'message' => 'Please enter an address',
+                        'message' => 'Please enter an email address',
                     ]),
                     new Assert\Email([
                         'message' => 'Please enter a valid email address',
