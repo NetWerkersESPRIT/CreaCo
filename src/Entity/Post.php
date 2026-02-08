@@ -53,7 +53,7 @@ class Post
     private ?Comment $solution = null;
 
     #[ORM\ManyToOne(inversedBy: 'posts')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: true)]
     private ?Users $user = null;
 
 
@@ -79,7 +79,7 @@ class Post
     public function __construct()
     {
         $this->comments = new ArrayCollection();
-        $this->createdAt = new \DateTimeImmutable(); // auto set
+        $this->createdAt = new \DateTimeImmutable(); 
         $this->likes = 0;
     }
 

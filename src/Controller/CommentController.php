@@ -16,21 +16,19 @@ final class CommentController extends AbstractController
     #[Route('/forum/{id}/comment/new', name: 'app_comment_new', methods: ['GET', 'POST'])]
     public function new(Post $post, Request $request, EntityManagerInterface $em): Response
     {
-        // Block comments if post is solved
+        
         if ($post->getStatus() === 'solved') {
             $this->addFlash('warning', 'Ce post est résolu, vous ne pouvez plus commenter.');
             return $this->redirectToRoute('app_post_show', ['id' => $post->getId()]);
         }
 
         $currentUser = $this->getUser();
-        if (!$currentUser) {
-            $this->addFlash('danger', 'Veuillez vous connecter.');
-            return $this->redirectToRoute('app_signup');
-        }
-
+        
         $comment = new Comment();
         $comment->setPost($post);
-        $comment->setUser($currentUser);
+        if ($currentUser) {
+            $comment->setUser($currentUser);
+        }
         $comment->setCreatedAt(new \DateTimeImmutable());
         $comment->setUpdatedAt(new \DateTimeImmutable());
         $comment->setLikes(0);
@@ -89,10 +87,11 @@ final class CommentController extends AbstractController
     #[Route('/comment/{id}/hide', name: 'app_comment_toggle_hide', methods: ['POST'])]
     public function toggleHide(Comment $comment, EntityManagerInterface $em): Response
     {
-        // Permission check: only post author or comment author can hide
+        
         $user = $this->getUser();
         if (!$user) {
-            $user = $em->getRepository(\App\Entity\Users::class)->findOneBy([]); // Fallback
+             $this->addFlash('danger', 'Veuillez vous connecter.');
+             return $this->redirectToRoute('app_post_show', ['id' => $comment->getPost()->getId()]);
         }
 
         if ($comment->getUser() === $user || $comment->getPost()->getUser() === $user) {
