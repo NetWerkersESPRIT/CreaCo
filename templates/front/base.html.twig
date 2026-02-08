@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}CreaCo - Apprendre & Créer{% endblock %}</title>
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Tailwind CSS (CDN for quick premium styling) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#6366f1',
+                        secondary: '#a855f7',
+                    },
+                    fontFamily: {
+                        sans: ['Outfit', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style>
+        .glass {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .gradient-bg {
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+        }
+    </style>
+    {% block stylesheets %}{% endblock %}
+</head>
+<body class="bg-gray-50 text-gray-900 min-h-screen flex flex-col">
+    <!-- Navbar -->
+    <nav class="sticky top-0 z-50 glass shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex items-center">
+                    <a href="{{ path('app_home') }}" class="flex items-center gap-2">
+                        <div class="w-10 h-10 gradient-bg rounded-xl flex items-center justify-center text-white shadow-lg">
+                            <i class="fas fa-rocket"></i>
+                        </div>
+                        <span class="text-2xl font-bold gradient-text">CreaCo</span>
+                    </a>
+                </div>
+                
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="{{ path('app_home') }}" class="text-gray-600 hover:text-primary transition-colors font-medium">Accueil</a>
+                    <a href="#" class="text-gray-600 hover:text-primary transition-colors font-medium">À propos</a>
+                </div>
+
+                <div class="flex items-center gap-4">
+                    <a href="{{ path('app_home') }}" class="text-sm font-semibold text-gray-700 hover:text-primary px-4 py-2 rounded-lg transition-all">S'identifier</a>
+                    <a href="{{ path('app_home') }}" class="text-sm font-semibold text-white gradient-bg px-6 py-2 rounded-xl shadow-md hover:shadow-lg hover:scale-105 transition-all">Rejoindre</a>
+                    <a href="{{ path('app_admin_dashboard') }}" class="ml-2 text-gray-400 hover:text-primary" title="Administration">
+                        <i class="fas fa-cog text-xl"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="flex-grow">
+        {% block body %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-gray-100 mt-20">
+        <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-8">
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 gradient-bg rounded-lg flex items-center justify-center text-white text-xs">
+                        <i class="fas fa-rocket"></i>
+                    </div>
+                    <span class="text-xl font-bold gradient-text">CreaCo</span>
+                </div>
+                <div class="flex space-x-6 text-gray-400">
+                    <a href="#" class="hover:text-primary transition-colors"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="hover:text-primary transition-colors"><i class="fab fa-github"></i></a>
+                    <a href="#" class="hover:text-primary transition-colors"><i class="fab fa-discord"></i></a>
+                </div>
+                <p class="text-gray-400 text-sm">
+                    &copy; {{ "now"|date("Y") }} CreaCo. Tous droits réservés.
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    {% block javascripts %}{% endblock %}
+</body>
+</html>
