@@ -33,7 +33,7 @@
 
                 <!-- Content Style -->
                 <div class="p-4 pt-2">
-                    <a href="{{ path('app_post_show', {'id': post.id}) }}" class="block">
+                    <a href="{{ path('forum_show', {'id': post.id}) }}" class="block">
                         <h5 class="font-bold text-slate-800 mb-2 leading-tight hover:text-purple-700 transition-colors">{{ post.title }}</h5>
                     </a>
                     <div class="text-sm leading-normal text-slate-600 mb-4 whitespace-pre-wrap">
@@ -72,7 +72,7 @@
                     </form>
 
                     <!-- Comment -->
-                    <a href="{{ path('app_post_show', {'id': post.id}) }}" class="bg-gray-100 rounded-full flex items-center px-4 py-2 text-slate-600 hover:bg-gray-200 transition-all text-decoration-none border-0">
+                    <a href="{{ path('forum_show', {'id': post.id}) }}" class="bg-gray-100 rounded-full flex items-center px-4 py-2 text-slate-600 hover:bg-gray-200 transition-all text-decoration-none border-0">
                         <i class="fas fa-comment text-xs text-slate-500 mr-2"></i>
                         <span class="text-xs font-bold">{{ post.comments|length }} Commentaires</span>
                     </a>

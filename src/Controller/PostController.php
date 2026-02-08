@@ -116,7 +116,7 @@ final class PostController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_post_show', methods: ['GET', 'POST'], requirements: ['id' => '\d+'])]
+    #[Route('/{id}', name: 'forum_show', methods: ['GET', 'POST'], requirements: ['id' => '\d+'])]
     public function show(Request $request, Post $post, EntityManagerInterface $em): Response
     {
         
@@ -150,7 +150,7 @@ final class PostController extends AbstractController
 
             $this->addFlash('success', 'Votre commentaire a été ajouté !');
 
-            return $this->redirectToRoute('app_post_show', ['id' => $post->getId()]);
+            return $this->redirectToRoute('forum_show', ['id' => $post->getId()]);
         }
 
         if ($request->isMethod('POST') && $request->request->get('comment_body')) {
@@ -180,7 +180,7 @@ final class PostController extends AbstractController
             $em->flush();
 
             $this->addFlash('success', 'Votre réponse a été ajoutée !');
-            return $this->redirectToRoute('app_post_show', ['id' => $post->getId()]);
+            return $this->redirectToRoute('forum_show', ['id' => $post->getId()]);
         }
 
         
@@ -209,7 +209,7 @@ final class PostController extends AbstractController
         $currentRole = strtolower(trim($user->getRole()));
         if ($currentRole !== 'manager') {
              $this->addFlash('danger', sprintf('Accès refusé. Seuls les managers peuvent marquer une solution. Votre rôle actuel est : "%s".', $user->getRole()));
-             return $this->redirectToRoute('app_post_show', ['id' => $post->getId()]);
+             return $this->redirectToRoute('forum_show', ['id' => $post->getId()]);
         }
 
         // Find the comment
@@ -224,7 +224,7 @@ final class PostController extends AbstractController
 
         $this->addFlash('success', 'Le message a été marqué comme résolu ! Plus aucun commentaire ne peut être ajouté.');
 
-        return $this->redirectToRoute('app_post_show', ['id' => $post->getId()]);
+        return $this->redirectToRoute('forum_show', ['id' => $post->getId()]);
     }
 
     #[Route('/{id}/edit', name: 'app_post_edit', methods: ['GET', 'POST'], requirements: ['id' => '\d+'])]

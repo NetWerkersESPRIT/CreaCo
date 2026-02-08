@@ -20,7 +20,7 @@
             {{ button_label|default('Enregistrer les modifications') }}
         </button>
         {% if form.vars.data.post %}
-            <a href="{{ path('app_post_show', {'id': form.vars.data.post.id}) }}" class="inline-block px-8 py-3 font-bold text-center uppercase align-middle transition-all bg-gray-100 border-0 rounded-xl cursor-pointer shadow-soft-xs hover:bg-gray-200 text-slate-700 text-xs tracking-tight-soft">
+            <a href="{{ path('forum_show', {'id': form.vars.data.post.id}) }}" class="inline-block px-8 py-3 font-bold text-center uppercase align-middle transition-all bg-gray-100 border-0 rounded-xl cursor-pointer shadow-soft-xs hover:bg-gray-200 text-slate-700 text-xs tracking-tight-soft">
                 Annuler
             </a>
         {% endif %}

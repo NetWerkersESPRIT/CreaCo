@@ -211,7 +211,7 @@
 
                                 <!-- Reply Form (Hidden by default) -->
                                 <div id="reply-form-{{ comment.id }}" class="hidden mt-4 bg-gray-50/50 p-4 rounded-xl border border-gray-100">
-                                    <form action="{{ path('app_post_show', {'id': post.id}) }}" method="POST">
+                                    <form action="{{ path('forum_show', {'id': post.id}) }}" method="POST">
                                         <input type="hidden" name="parent_id" value="{{ comment.id }}">
                                         <textarea name="comment_body" class="block w-full px-4 py-2 text-sm text-slate-700 border border-gray-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500/10 focus:border-purple-500 transition-all bg-white" rows="2" placeholder="Votre réponse..."></textarea>
                                         <div class="mt-2 flex justify-end">

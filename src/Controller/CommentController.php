@@ -19,7 +19,7 @@ final class CommentController extends AbstractController
         
         if ($post->getStatus() === 'solved') {
             $this->addFlash('warning', 'Ce post est résolu, vous ne pouvez plus commenter.');
-            return $this->redirectToRoute('app_post_show', ['id' => $post->getId()]);
+            return $this->redirectToRoute('forum_show', ['id' => $post->getId()]);
         }
 
         $currentUser = $this->getUser();
@@ -40,7 +40,7 @@ final class CommentController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $em->persist($comment);
             $em->flush();
-            return $this->redirectToRoute('app_post_show', ['id' => $post->getId()]);
+            return $this->redirectToRoute('forum_show', ['id' => $post->getId()]);
         }
 
         return $this->render('comment/new.html.twig', [
@@ -61,7 +61,7 @@ final class CommentController extends AbstractController
 
             $em->flush();
 
-            return $this->redirectToRoute('app_post_show', [
+            return $this->redirectToRoute('forum_show', [
                 'id' => $comment->getPost()->getId()
             ]);
         }
@@ -82,7 +82,7 @@ final class CommentController extends AbstractController
             $em->flush();
         }
 
-        return $this->redirectToRoute('app_post_show', ['id' => $postId]);
+        return $this->redirectToRoute('forum_show', ['id' => $postId]);
     }
     #[Route('/comment/{id}/hide', name: 'app_comment_toggle_hide', methods: ['POST'])]
     public function toggleHide(Comment $comment, EntityManagerInterface $em): Response
@@ -91,7 +91,7 @@ final class CommentController extends AbstractController
         $user = $this->getUser();
         if (!$user) {
              $this->addFlash('danger', 'Veuillez vous connecter.');
-             return $this->redirectToRoute('app_post_show', ['id' => $comment->getPost()->getId()]);
+             return $this->redirectToRoute('forum_show', ['id' => $comment->getPost()->getId()]);
         }
 
         if ($comment->getUser() === $user || $comment->getPost()->getUser() === $user) {
@@ -103,6 +103,6 @@ final class CommentController extends AbstractController
             $this->addFlash('danger', 'Action non autorisée.');
         }
 
-        return $this->redirectToRoute('app_post_show', ['id' => $comment->getPost()->getId()]);
+        return $this->redirectToRoute('forum_show', ['id' => $comment->getPost()->getId()]);
     }
 }
