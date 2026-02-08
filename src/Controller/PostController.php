@@ -18,7 +18,7 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
  
 #[Route('/forum')]
-#[IsGranted('IS_AUTHENTICATED_FULLY')]
+// #[IsGranted('IS_AUTHENTICATED_FULLY')]
 final class PostController extends AbstractController
 {
     #[Route('', name: 'forum_index', methods: ['GET'])]
@@ -54,15 +54,13 @@ final class PostController extends AbstractController
             $post->setCreatedAt($now);
             $post->setUpdatedAt($now);
             
-            // Automatically set the logged in user as author
+         
             $user = $this->getUser();
-            if (!$user) {
-                $this->addFlash('danger', 'Vous devez être connecté pour publier un post.');
-                return $this->redirectToRoute('app_login');
+            if ($user) {
+                $post->setUser($user);
             }
-            $post->setUser($user);
 
-            // Set defaults if null
+            
             if ($post->getStatus() === null) {
                 $post->setStatus('published');
             }
@@ -129,7 +127,6 @@ final class PostController extends AbstractController
         if ($commentForm->isSubmitted() && $commentForm->isValid()) {
             $comment->setPost($post);
             
-            // Handle reply
             $parentId = $request->request->get('parent_id');
             if ($parentId) {
                 $parentComment = $em->getRepository(Comment::class)->find($parentId);
@@ -138,12 +135,8 @@ final class PostController extends AbstractController
                 }
             }
 
-            // Automatically set user
             if ($this->getUser()) {
                  $comment->setUser($this->getUser());
-            } else {
-                 $this->addFlash('danger', 'Vous devez être connecté pour commenter.');
-                 return $this->redirectToRoute('app_post_show', ['id' => $post->getId()]);
             }
 
             $now = new \DateTimeImmutable();
@@ -160,7 +153,6 @@ final class PostController extends AbstractController
             return $this->redirectToRoute('app_post_show', ['id' => $post->getId()]);
         }
 
-        // Also check for manual reply submission (outside of symfony form)
         if ($request->isMethod('POST') && $request->request->get('comment_body')) {
             $body = $request->request->get('comment_body');
             $parentId = $request->request->get('parent_id');
@@ -171,9 +163,6 @@ final class PostController extends AbstractController
             
             if ($this->getUser()) {
                 $reply->setUser($this->getUser());
-            } else {
-                $this->addFlash('danger', 'Vous devez être connecté pour répondre.');
-                return $this->redirectToRoute('app_post_show', ['id' => $post->getId()]);
             }
 
             if ($parentId) {
@@ -194,7 +183,7 @@ final class PostController extends AbstractController
             return $this->redirectToRoute('app_post_show', ['id' => $post->getId()]);
         }
 
-        // Only show top-level comments in primary loop
+        
         $comments = $em->getRepository(Comment::class)->findBy(
             ['post' => $post, 'parentComment' => null],
             ['createdAt' => 'ASC']
@@ -202,7 +191,7 @@ final class PostController extends AbstractController
 
         return $this->render('post/show.html.twig', [
             'post' => $post,
-            'comments' => $comments, // Pass filtered comments
+            'comments' => $comments, 
             'commentForm' => $commentForm->createView(),
         ]);
     }
@@ -210,14 +199,13 @@ final class PostController extends AbstractController
     #[Route('/{id}/comment/{commentId}/solution', name: 'app_post_mark_solution', methods: ['GET'], requirements: ['id' => '\d+', 'commentId' => '\d+'])]
     public function markSolution(Post $post, int $commentId, EntityManagerInterface $em): Response
     {
-        // Security check: ensure current user is a manager
+       
         $user = $this->getUser();
         if (!$user) {
             $this->addFlash('danger', 'Veuillez vous connecter.');
-            return $this->redirectToRoute('app_post_show', ['id' => $post->getId()]);
+            return $this->redirectToRoute('forum_index');
         }
 
-        // Check if user is manager (string comparison as requested)
         $currentRole = strtolower(trim($user->getRole()));
         if ($currentRole !== 'manager') {
              $this->addFlash('danger', sprintf('Accès refusé. Seuls les managers peuvent marquer une solution. Votre rôle actuel est : "%s".', $user->getRole()));
@@ -231,7 +219,7 @@ final class PostController extends AbstractController
         }
 
         $post->setSolution($comment);
-        $post->setStatus('solved'); // Use 'solved' as defined in Entity Choice
+        $post->setStatus('solved'); 
         $em->flush();
 
         $this->addFlash('success', 'Le message a été marqué comme résolu ! Plus aucun commentaire ne peut être ajouté.');
@@ -242,7 +230,7 @@ final class PostController extends AbstractController
     #[Route('/{id}/edit', name: 'app_post_edit', methods: ['GET', 'POST'], requirements: ['id' => '\d+'])]
     public function edit(Request $request, Post $post, EntityManagerInterface $em, SluggerInterface $slugger): Response
     {
-        // Ownership check: only the author can edit
+        
         if ($this->getUser() !== $post->getUser()) {
              $this->addFlash('danger', 'Vous n’êtes pas autorisé à modifier ce post.');
              return $this->redirectToRoute('forum_index');
@@ -257,7 +245,7 @@ final class PostController extends AbstractController
             /** @var UploadedFile $imageFile */
             $imageFile = $form->get('imageFile')->getData();
             if ($imageFile) {
-                // Delete old image if exists
+                
                 if ($post->getImageName()) {
                     $oldPath = $this->getParameter('kernel.project_dir') . '/public/uploads/' . $post->getImageName();
                     if (file_exists($oldPath)) {
@@ -283,7 +271,7 @@ final class PostController extends AbstractController
             /** @var UploadedFile $pdfFile */
             $pdfFile = $form->get('pdfFile')->getData();
             if ($pdfFile) {
-                // Delete old PDF if exists
+                
                 if ($post->getPdfName()) {
                     $oldPath = $this->getParameter('kernel.project_dir') . '/public/uploads/' . $post->getPdfName();
                     if (file_exists($oldPath)) {
@@ -322,7 +310,7 @@ final class PostController extends AbstractController
     #[Route('/{id}/delete', name: 'app_post_delete', methods: ['POST'], requirements: ['id' => '\d+'])]
     public function delete(Request $request, Post $post, EntityManagerInterface $em): Response
     {
-        // Ownership check: only the author can delete
+        
         if ($this->getUser() !== $post->getUser()) {
              $this->addFlash('danger', 'Vous n’êtes pas autorisé à supprimer ce post.');
              return $this->redirectToRoute('forum_index');

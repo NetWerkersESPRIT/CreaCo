@@ -93,7 +93,7 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function eraseCredentials(): void
     {
-        // If you store any temporary, sensitive data on the user, clear it here
+        
     }
 
     public function getAddress(): ?string
@@ -177,7 +177,7 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
     public function removePost(Post $post): static
     {
         if ($this->posts->removeElement($post)) {
-            // set the owning side to null (unless already changed)
+            
             if ($post->getUser() === $this) {
                 $post->setUser(null);
             }
@@ -207,7 +207,7 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
     public function removeComment(Comment $comment): static
     {
         if ($this->comments->removeElement($comment)) {
-            // set the owning side to null (unless already changed)
+            
             if ($comment->getUser() === $this) {
                 $comment->setUser(null);
             }

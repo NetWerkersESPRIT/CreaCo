@@ -97,15 +97,7 @@
                     <img src="https://ui-avatars.com/api/?name={{ app.user.username }}&background=cb0c9f&color=fff" class="w-8 h-8 rounded-lg shadow-soft-sm" alt="user profile">
                     <span class="text-xs font-bold text-slate-700">{{ app.user.username }} <i class="fas fa-check-circle text-purple-500 text-[10px] ml-0.5"></i></span>
                     <span class="text-[10px] text-slate-400 capitalize px-2 py-0.5 bg-white border border-gray-100 rounded-lg">{{ app.user.role }}</span>
-                    <a href="{{ path('app_logout') }}" class="text-slate-400 hover:text-red-500 transition-all ml-1" title="Déconnexion">
-                      <i class="fas fa-power-off text-xs"></i>
-                    </a>
                   </div>
-                {% else %}
-                  <a href="{{ path('app_signup') }}" class="flex items-center bg-white px-4 py-2 rounded-xl border border-gray-200 shadow-soft-xs hover:shadow-soft-md transition-all text-slate-700 text-decoration-none">
-                    <i class="fa fa-user-plus mr-2 text-purple-700 text-xs"></i>
-                    <span class="text-xs font-bold">Connexion / Inscription</span>
-                  </a>
                 {% endif %}
               </li>
             </ul>
