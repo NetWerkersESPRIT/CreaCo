@@ -412,7 +412,12 @@
                           <span class="text-xs font-semibold leading-tight text-slate-400">{{ user.numtel }}</span>
                         </td>
                         <td class="p-2 align-middle bg-transparent border-b whitespace-nowrap shadow-transparent text-center">
+                          <a
+                            href="{{ path('app_user_edit', { id: user.id }) }}"
+                            class="px-3 py-1 bg-yellow-500 text-white rounded">
                             <button type="button" data-toggle="modal" data-target="#import" class="px-6 py-3 font-bold text-center bg-gradient-to-tl from-blue-600 to-cyan-400 uppercase  transition-all rounded-lg cursor-pointer leading-pro text-xs ease-soft-in tracking-tight-soft shadow-soft-md bg-150 bg-x-25 hover:scale-102 active:opacity-85 hover:shadow-soft-xs text-white">Edit</button>
+
+                          </a>
                             <a
                                 href="{{ path('user_delete', { id: user.id }) }}"
                                 class="px-6 py-3 font-bold bg-red-600 text-white rounded-lg hover:bg-red-700"

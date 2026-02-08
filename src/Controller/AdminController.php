@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use App\Entity\Users;
+use App\Form\UserType;
 use App\Repository\UsersRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -22,10 +24,19 @@ final class AdminController extends AbstractController
     }
 
     #[Route('/admin/{id}/edit', name: 'app_user_edit')]
-    public function edit(UsersRepository $user): Response
-    {
-        // build form here later
+    public function edit(Users $user, Request $request, EntityManagerInterface $em
+    ): Response {
+        $form = $this->createForm(UserType::class, $user);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em->flush();
+
+            return $this->redirectToRoute('app_admin');
+        }
+
         return $this->render('user/edit.html.twig', [
+            'form' => $form->createView(),
             'user' => $user,
         ]);
     }

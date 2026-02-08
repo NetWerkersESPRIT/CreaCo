@@ -1,0 +1,21 @@
+{% extends 'layouts/public.html.twig' %}
+
+{% block title %}Succès - Contrat Signé{% endblock %}
+
+{% block header_title %}Merci !{% endblock %}
+{% block header_subtitle %}Votre signature a été enregistrée avec succès.{% endblock %}
+
+{% block body %}
+<div class="bg-white rounded-2xl shadow-soft-2xl p-12 text-center">
+    <div class="w-20 h-20 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-6">
+        <i class="fa fa-check text-4xl"></i>
+    </div>
+    <h3 class="font-bold text-slate-700 mb-4">Contrat validé</h3>
+    <p class="text-slate-500 mb-8">Le créateur a été informé de votre signature. Vous recevrez prochainement une copie contresignée par email le cas échéant.</p>
+    
+    <div class="p-6 bg-gray-50 rounded-2xl inline-block">
+        <p class="text-xs font-bold text-slate-400 uppercase mb-2">Référence document</p>
+        <p class="text-md font-mono text-slate-700">#{{ contract.contractNumber }}</p>
+    </div>
+</div>
+{% endblock %}
