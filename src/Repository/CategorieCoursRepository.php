@@ -21,6 +21,18 @@ class CategorieCoursRepository extends ServiceEntityRepository
         parent::__construct($registry, CategorieCours::class);
     }
 
+    /**
+     * @return CategorieCours[] Returns an array of CategorieCours objects
+     */
+    public function searchByName(string $search): array
+    {
+        return $this->createQueryBuilder('c')
+            ->andWhere('c.nom LIKE :search')
+            ->setParameter('search', '%' . $search . '%')
+            ->getQuery()
+            ->getResult();
+    }
+
     public function save(CategorieCours $entity, bool $flush = false): void
     {
         $this->getEntityManager()->persist($entity);

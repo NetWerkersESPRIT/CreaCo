@@ -11,7 +11,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
 final class HomeController extends AbstractController
-{
+{   
+    // READ DASHBOARD 
     #[Route('/admin', name: 'app_admin_dashboard')]
     public function index(
         CategorieCoursRepository $catRepo,
@@ -20,6 +21,7 @@ final class HomeController extends AbstractController
         UsersRepository $userRepo
     ): Response
     {
+        // affichage du dashboard
         return $this->render('back/home/index.html.twig', [
             'count_categories' => $catRepo->count([]),
             'count_courses' => $coursRepo->count([]),

@@ -11,10 +11,10 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-#[Route('/users')]
-final class UsersController extends AbstractController
+#[Route('/admin/users')]
+class UsersController extends AbstractController
 {
-    #[Route(name: 'app_users_index', methods: ['GET'])]
+    #[Route('/', name: 'app_users_index', methods: ['GET'])]
     public function index(UsersRepository $usersRepository): Response
     {
         return $this->render('back/users/index.html.twig', [
@@ -71,7 +71,7 @@ final class UsersController extends AbstractController
     #[Route('/{id}', name: 'app_users_delete', methods: ['POST'])]
     public function delete(Request $request, Users $user, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$user->getId(), $request->getPayload()->getString('_token'))) {
+        if ($this->isCsrfTokenValid('delete'.$user->getId(), $request->request->get('_token'))) {
             $entityManager->remove($user);
             $entityManager->flush();
         }

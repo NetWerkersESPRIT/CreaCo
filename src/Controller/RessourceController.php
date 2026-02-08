@@ -18,10 +18,27 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 final class RessourceController extends AbstractController
 {
     #[Route(name: 'app_ressource_index', methods: ['GET'])]
-    public function index(RessourceRepository $ressourceRepository): Response
+    public function index(Request $request, RessourceRepository $ressourceRepository): Response
     {
+        $filters = [
+            'search' => $request->query->get('search'),
+            'type'   => $request->query->get('type'),
+            'cours'  => $request->query->get('cours'), // ID or Title
+            'nom'    => $request->query->get('nom'),
+        ];
+
+        $sort = [
+            'field' => $request->query->get('sort'),
+            'order' => $request->query->get('order', 'DESC'),
+        ];
+
+        $ressources = $ressourceRepository->findWithFilters($filters, $sort);
+
         return $this->render('back/ressource/index.html.twig', [
-            'ressources' => $ressourceRepository->findAll(),
+            'ressources' => $ressources,
+            'filters' => $filters,
+            'sort' => $sort,
+            'search' => $filters['search'], // Compatibility
         ]);
     }
 
@@ -40,9 +57,29 @@ final class RessourceController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $nature = $form->get('nature')->getData();
             $file = $form->get('fichier')->getData();
+            $contenu = $form->get('contenu')->getData();
 
-            if ($file) {
+            // Validate based on nature
+            if ($nature === 'fichier' && !$file) {
+                 $this->addFlash('error', 'Veuillez sélectionner un fichier.');
+                 return $this->render('back/ressource/new.html.twig', [
+                    'ressource' => $ressource,
+                    'form' => $form->createView(),
+                    'selected_course' => $selectedCourse,
+                ]);
+            }
+            if ($nature === 'texte' && empty($contenu)) {
+                $this->addFlash('error', 'Veuillez saisir du contenu texte.');
+                 return $this->render('back/ressource/new.html.twig', [
+                    'ressource' => $ressource,
+                    'form' => $form->createView(),
+                    'selected_course' => $selectedCourse,
+                ]);
+            }
+
+            if ($nature === 'fichier' && $file) {
                 $originalFilename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
                 $safeFilename = $slugger->slug($originalFilename);
                 $newFilename = $safeFilename.'-'.uniqid().'.'.$file->guessExtension();
@@ -69,6 +106,10 @@ final class RessourceController extends AbstractController
                     } else {
                         $ressource->setType('FILE');
                     }
+                    
+                    // Clear content if file uploaded (optional, but cleaner)
+                    $ressource->setContenu(null);
+                    
                 } catch (FileException $e) {
                     $this->addFlash('error', 'Erreur lors de l\'upload : ' . $e->getMessage());
                     return $this->render('back/ressource/new.html.twig', [
@@ -77,6 +118,9 @@ final class RessourceController extends AbstractController
                         'selected_course' => $selectedCourse,
                     ]);
                 }
+            } elseif ($nature === 'texte') {
+                $ressource->setType('FILE'); // Default type for text resources
+                $ressource->setUrl(null);   // Ensure no URL
             }
 
             // Important: Force re-assignment of course if it was pre-selected
@@ -116,10 +160,13 @@ final class RessourceController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $nature = $form->get('nature')->getData();
             $file = $form->get('fichier')->getData();
+            $contenu = $form->get('contenu')->getData();
 
-            if ($file) {
-                $originalFilename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+            if ($nature === 'fichier' && $file) {
+                // ... file upload logic ...
+                 $originalFilename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
                 $safeFilename = $slugger->slug($originalFilename);
                 $newFilename = $safeFilename.'-'.uniqid().'.'.$file->guessExtension();
 
@@ -143,9 +190,27 @@ final class RessourceController extends AbstractController
                     } else {
                         $ressource->setType('FILE');
                     }
+                    
+                    // Clear content if switching to file and uploading new one
+                    $ressource->setContenu(null);
+                    
                 } catch (FileException $e) {
                     $this->addFlash('error', 'Erreur lors de l\'upload : ' . $e->getMessage());
+                    return $this->render('back/ressource/edit.html.twig', [
+                        'ressource' => $ressource,
+                        'form' => $form->createView(),
+                    ]);
                 }
+            } elseif ($nature === 'texte') {
+                if (empty($contenu)) {
+                    $this->addFlash('error', 'Veuillez saisir du contenu texte.');
+                    return $this->render('back/ressource/edit.html.twig', [
+                        'ressource' => $ressource,
+                        'form' => $form->createView(),
+                    ]);
+                }
+                $ressource->setType('FILE');
+                $ressource->setUrl(null);
             }
 
             $entityManager->flush();

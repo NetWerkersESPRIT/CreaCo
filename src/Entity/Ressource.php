@@ -18,13 +18,24 @@ class Ressource
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank(message: "Le nom de la ressource est obligatoire")]
+    #[Assert\Length(
+    min: 3,
+    max: 255,
+    minMessage: "Le nom doit contenir au moins {{ limit }} caractères",
+    maxMessage: "Le nom ne peut pas dépasser {{ limit }} caractères"
+    )]
+
     private ?string $nom = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $url = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Assert\Choice(choices: ['PDF', 'IMAGE', 'VIDEO', 'FILE'], message: "Type de ressource invalide")]
     private ?string $type = null;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $contenu = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $date_de_creation = null;
@@ -59,7 +70,7 @@ class Ressource
         return $this->url;
     }
 
-    public function setUrl(string $url): static
+    public function setUrl(?string $url): static
     {
         $this->url = $url;
 
@@ -71,9 +82,21 @@ class Ressource
         return $this->type;
     }
 
-    public function setType(string $type): static
+    public function setType(?string $type): static
     {
         $this->type = $type;
+
+        return $this;
+    }
+
+    public function getContenu(): ?string
+    {
+        return $this->contenu;
+    }
+
+    public function setContenu(?string $contenu): static
+    {
+        $this->contenu = $contenu;
 
         return $this;
     }

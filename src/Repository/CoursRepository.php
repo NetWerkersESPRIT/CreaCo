@@ -21,6 +21,55 @@ class CoursRepository extends ServiceEntityRepository
         parent::__construct($registry, Cours::class);
     }
 
+    /**
+     * @return Cours[] Returns an array of Cours objects
+     */
+    public function findWithFilters(array $filters = [], array $sort = []): array
+    {
+        $qb = $this->createQueryBuilder('c')
+            ->leftJoin('c.categorie', 'cat')
+            ->addSelect('cat');
+
+        // Global Search (Title or Description)
+        if (!empty($filters['search'])) {
+            $qb->andWhere('c.titre LIKE :search OR c.description LIKE :search')
+               ->setParameter('search', '%' . $filters['search'] . '%');
+        }
+
+        // Specific Filters
+        if (!empty($filters['titre'])) {
+            $qb->andWhere('c.titre LIKE :titre')
+               ->setParameter('titre', '%' . $filters['titre'] . '%');
+        }
+
+        if (!empty($filters['categorie'])) {
+             // If numeric, assume ID
+            if (is_numeric($filters['categorie'])) {
+                $qb->andWhere('cat.id = :catId')->setParameter('catId', $filters['categorie']);
+            } else {
+                $qb->andWhere('cat.nom LIKE :catName')->setParameter('catName', '%' . $filters['categorie'] . '%');
+            }
+        }
+
+        // Sorting
+        if (!empty($sort['field'])) {
+            $order = strtoupper($sort['order'] ?? 'ASC');
+            if (!in_array($order, ['ASC', 'DESC'])) {
+                $order = 'ASC';
+            }
+            
+            if (in_array($sort['field'], ['titre', 'date_de_creation', 'description'])) {
+                $qb->orderBy('c.' . $sort['field'], $order);
+            } elseif ($sort['field'] === 'category') {
+                $qb->orderBy('cat.nom', $order);
+            }
+        } else {
+            $qb->orderBy('c.date_de_creation', 'DESC');
+        }
+
+        return $qb->getQuery()->getResult();
+    }
+
     public function save(Cours $entity, bool $flush = false): void
     {
         $this->getEntityManager()->persist($entity);
