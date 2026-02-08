@@ -1,0 +1,16 @@
+Form is invalid!
+Errors: ERROR: Le user est obligatoire.
+
+Data: Array
+(
+    [post] => Array
+        (
+            [title] => Problème de planification 
+            [content] => quel est le meilleur jour pour poster ?
+            [tags] => 
+            [imageName] => 
+            [status] => published
+            [_token] => 8a2.QlsLaCy3YgppqvZ_AwiSE7MI7UZrJNhfG_RgxMMLKb0.NzYmWR__KWxZ3po5ZWf3S8A92w4OEJMAaLgjvPc_ZNApLWIrf8MuXy7-wg
+        )
+
+)
