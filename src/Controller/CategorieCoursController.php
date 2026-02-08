@@ -16,7 +16,7 @@ class CategorieCoursController extends AbstractController
     #[Route('/', name: 'app_categorie_cours_index', methods: ['GET'])]
     public function index(CategorieCoursRepository $categorieCoursRepository): Response
     {
-        return $this->render('categorie_cours/index.html.twig', [
+        return $this->render('back/categorie_cours/index.html.twig', [
             'categorie_cours' => $categorieCoursRepository->findAll(),
         ]);
     }
@@ -34,7 +34,7 @@ class CategorieCoursController extends AbstractController
             return $this->redirectToRoute('app_categorie_cours_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->render('categorie_cours/new.html.twig', [
+        return $this->render('back/categorie_cours/new.html.twig', [
             'categorie_cours' => $categorieCours,
             'form' => $form,
         ]);
@@ -43,8 +43,17 @@ class CategorieCoursController extends AbstractController
     #[Route('/{id}', name: 'app_categorie_cours_show', methods: ['GET'])]
     public function show(CategorieCours $categorieCours): Response
     {
-        return $this->render('categorie_cours/show.html.twig', [
+        return $this->render('back/categorie_cours/show.html.twig', [
             'categorie_cours' => $categorieCours,
+        ]);
+    }
+
+    #[Route('/{id}/courses', name: 'app_categorie_cours_courses', methods: ['GET'])]
+    public function courses(CategorieCours $categorieCours): Response
+    {
+        return $this->render('back/categorie_cours/courses.html.twig', [
+            'categorie_cours' => $categorieCours,
+            'cours' => $categorieCours->getCours(),
         ]);
     }
 
@@ -60,7 +69,7 @@ class CategorieCoursController extends AbstractController
             return $this->redirectToRoute('app_categorie_cours_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->render('categorie_cours/edit.html.twig', [
+        return $this->render('back/categorie_cours/edit.html.twig', [
             'categorie_cours' => $categorieCours,
             'form' => $form,
         ]);

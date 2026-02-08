@@ -7,8 +7,10 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: CategorieCoursRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class CategorieCours
 {
     #[ORM\Id]
@@ -17,12 +19,19 @@ class CategorieCours
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: "Le nom de la catégorie est obligatoire")]
     private ?string $nom = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $description = null;
 
-    #[ORM\OneToMany(mappedBy: 'categorie', targetEntity: Cours::class)]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $date_de_creation = null;
+
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $date_de_modification = null;
+
+    #[ORM\OneToMany(mappedBy: 'categorie', targetEntity: Cours::class, cascade: ['remove'], orphanRemoval: true)]
     private Collection $cours;
 
     public function __construct()
@@ -87,5 +96,40 @@ class CategorieCours
         }
 
         return $this;
+    }
+    public function getDateDeCreation(): ?\DateTimeInterface
+    {
+        return $this->date_de_creation;
+    }
+
+    public function setDateDeCreation(\DateTimeInterface $date_de_creation): static
+    {
+        $this->date_de_creation = $date_de_creation;
+
+        return $this;
+    }
+
+    public function getDateDeModification(): ?\DateTimeInterface
+    {
+        return $this->date_de_modification;
+    }
+
+    public function setDateDeModification(?\DateTimeInterface $date_de_modification): static
+    {
+        $this->date_de_modification = $date_de_modification;
+
+        return $this;
+    }
+
+    #[ORM\PrePersist]
+    public function setInitialDates(): void
+    {
+        $this->date_de_creation = new \DateTime();
+    }
+
+    #[ORM\PreUpdate]
+    public function setUpdateDate(): void
+    {
+        $this->date_de_modification = new \DateTime();
     }
 }

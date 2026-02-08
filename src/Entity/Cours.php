@@ -7,8 +7,10 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: CoursRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class Cours
 {
     #[ORM\Id]
@@ -17,19 +19,29 @@ class Cours
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: "Le titre est obligatoire")]
     private ?string $titre = null;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Assert\NotBlank(message: "La description est obligatoire")]
     private ?string $description = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Assert\Url(message: "L'image doit être une URL valide")]
     private ?string $image = null;
+
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $date_de_creation = null;
+
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $date_de_modification = null;
 
     #[ORM\ManyToOne(inversedBy: 'cours')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Assert\NotNull(message: "La catégorie est obligatoire")]
     private ?CategorieCours $categorie = null;
 
-    #[ORM\OneToMany(mappedBy: 'cours', targetEntity: Ressource::class, orphanRemoval: true)]
+    #[ORM\OneToMany(mappedBy: 'cours', targetEntity: Ressource::class, cascade: ['remove'], orphanRemoval: true)]
     private Collection $ressources;
 
     public function __construct()
@@ -117,5 +129,41 @@ class Cours
             }
         }
 
+    }
+
+    public function getDateDeCreation(): ?\DateTimeInterface
+    {
+        return $this->date_de_creation;
+    }
+
+    public function setDateDeCreation(\DateTimeInterface $date_de_creation): static
+    {
+        $this->date_de_creation = $date_de_creation;
+
         return $this;
-    }}
+    }
+
+    public function getDateDeModification(): ?\DateTimeInterface
+    {
+        return $this->date_de_modification;
+    }
+
+    public function setDateDeModification(?\DateTimeInterface $date_de_modification): static
+    {
+        $this->date_de_modification = $date_de_modification;
+
+        return $this;
+    }
+
+    #[ORM\PrePersist]
+    public function setInitialDates(): void
+    {
+        $this->date_de_creation = new \DateTime();
+    }
+
+    #[ORM\PreUpdate]
+    public function setUpdateDate(): void
+    {
+        $this->date_de_modification = new \DateTime();
+    }
+}
