@@ -2593,6 +2593,10 @@
                     "dev-main": "3.6-dev"
                 }
             },
+            "bin": [
+                "Resources/bin/patch-type-declarations"
+            ],
+            "type": "library",
             "autoload": {
                 "files": [
                     "function.php"
@@ -2743,7 +2747,8 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-01-20T16:35:04+00:00"
+
+"time": "2026-01-20T16:35:04+00:00"
         },
         {
             "name": "symfony/doctrine-messenger",
@@ -3080,7 +3085,7 @@
                 "php": ">=8.1",
                 "psr/event-dispatcher": "^1"
             },
-            "type": "library",
+            "type": "composer-plugin",
             "extra": {
                 "thanks": {
                     "url": "https://github.com/symfony/contracts",

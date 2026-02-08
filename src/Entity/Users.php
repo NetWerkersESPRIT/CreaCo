@@ -29,7 +29,7 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255)]
     private ?string $role = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     private ?int $groupid = null;
 
     #[ORM\Column(length: 20, nullable: true)]
