@@ -58,7 +58,7 @@
 												<a href="{{ path('app_users_edit', {'id': user.id}) }}" class="text-xs font-semibold leading-tight text-slate-400 bg-gray-100 px-3 py-1 rounded-lg">
 													Modifier
 												</a>
-												<form method="post" action="{{ path('app_users_delete', {'id': user.id}) }}" onsubmit="return confirm('Êtes-vous sûr ?');" style="display:inline-block">
+												<form method="post" action="{{ path('app_users_delete', {'id': user.id}) }}" onsubmit="return confirm('Êtes-vous sûr ?');" style="display:inline-block" novalidate>
 													<input type="hidden" name="_token" value="{{ csrf_token('delete' ~ user.id) }}">
 													<button class="text-xs font-semibold leading-tight text-red-500 bg-gray-100 px-3 py-1 rounded-lg border-0 cursor-pointer">
 														Supprimer

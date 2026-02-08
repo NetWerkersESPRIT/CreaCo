@@ -1,4 +1,4 @@
-{{ form_start(form) }}
+{{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
 {# Nom de la catégorie #}
 <div class="mb-4">
 	{{ form_label(form.nom, 'Nom de la catégorie', {'label_attr': {'class': 'block mb-2 text-sm font-bold text-gray-700'}}) }}
