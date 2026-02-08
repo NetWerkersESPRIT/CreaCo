@@ -1,0 +1,112 @@
+{% extends 'layouts/dashboard.html.twig' %}
+
+{% block title %}Détails du Contrat - CreaCo{% endblock %}
+{% block breadcrumb %}Manager / Contrats / {{ contract.contractNumber }}{% endblock %}
+{% block page_title %}Contrat {{ contract.contractNumber }}{% endblock %}
+
+{% block body %}
+<div class="flex flex-wrap -mx-3">
+    <!-- Main Contract Details -->
+    <div class="w-full max-w-full px-3 mb-6">
+        <div class="relative flex flex-col min-w-0 break-words bg-white border-0 shadow-soft-xl rounded-2xl bg-clip-border">
+            <div class="p-6">
+                <div class="flex flex-wrap justify-between items-center mb-6">
+                    <div>
+                        <h5 class="mb-0">{{ contract.title }}</h5>
+                        <p class="text-xs text-slate-400 mt-1">Référence : {{ contract.contractNumber }}</p>
+                    </div>
+                    <span class="text-xs font-bold px-3 py-1 bg-gray-100 rounded-lg uppercase">Status: {{ contract.status }}</span>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                    <div class="p-4 bg-slate-50 rounded-xl">
+                        <h6 class="text-xxs font-bold uppercase text-slate-400 mb-2">Période de la mission</h6>
+                        <p class="text-sm font-bold text-slate-700">Du {{ contract.startDate|date('d/m/Y') }} au {{ contract.endDate|date('d/m/Y') }}</p>
+                    </div>
+                    <div class="p-4 bg-slate-50 rounded-xl">
+                        <h6 class="text-xxs font-bold uppercase text-slate-400 mb-2">Montant de la prestation</h6>
+                        <p class="text-sm font-bold text-slate-700">{{ contract.amount|number_format(3, ',', ' ') }} DT</p>
+                    </div>
+                    <div class="p-4 bg-fuchsia-50/50 border border-fuchsia-100 rounded-xl">
+                         <h6 class="text-xxs font-bold uppercase text-fuchsia-500 mb-2">Instructions initiales</h6>
+                         <p class="text-xs italic text-slate-600 line-clamp-2" title="{{ contract.collabRequest.description }}">"{{ contract.collabRequest.description }}"</p>
+                    </div>
+                </div>
+
+                <div class="mb-6">
+                    <h6 class="text-xs font-bold uppercase text-slate-400 mb-2">Conditions Générales (Objet)</h6>
+                    <div class="p-4 border rounded-xl bg-gray-50 text-sm whitespace-pre-wrap">{{ contract.terms }}</div>
+                </div>
+
+                {% if contract.paymentSchedule %}
+                <div class="mb-6">
+                    <h6 class="text-xs font-bold uppercase text-slate-400 mb-2">Échéances de paiement</h6>
+                    <div class="p-4 border rounded-xl bg-gray-50 text-sm whitespace-pre-wrap">{{ contract.paymentSchedule }}</div>
+                </div>
+                {% endif %}
+
+                {% if contract.status == 'DRAFT' %}
+                <div class="mt-8 flex flex-wrap gap-4">
+                    <a href="{{ path('app_manager_contract_edit', {id: contract.id}) }}" class="flex-1 min-w-[200px] text-center bg-white border border-fuchsia-500 text-fuchsia-500 font-bold py-3 rounded-xl uppercase text-xs shadow-soft-md transition-all hover:bg-fuchsia-50">
+                        <i class="fa fa-edit mr-2"></i> Modifier le brouillon
+                    </a>
+                    <form method="post" action="{{ path('app_manager_contract_send', {id: contract.id}) }}" class="flex-1 min-w-[200px]">
+                        <button type="submit" onclick="return confirm('Envoyer ce contrat au collaborateur pour signature ?')" class="w-full bg-gradient-to-tl from-purple-700 to-pink-500 text-white font-bold py-3 rounded-xl uppercase text-xs shadow-soft-md transition-all hover:scale-102">
+                            <i class="fa fa-paper-plane mr-2"></i> Envoyer pour signature
+                        </button>
+                    </form>
+                </div>
+                {% elseif contract.status == 'SENT' %}
+                <div class="mt-8 p-4 bg-blue-50 border border-blue-100 rounded-xl">
+                    <p class="text-sm text-blue-700">
+                        <i class="fa fa-info-circle mr-2"></i> Ce contrat a été envoyé le <b>{{ contract.sentAt|date('d/m/Y à H:i') }}</b>. En attente de signature du collaborateur.
+                    </p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Parties and Link in full width -->
+    <div class="w-full px-3 mb-6">
+        <div class="relative flex flex-col min-w-0 break-words bg-white border-0 shadow-soft-xl rounded-2xl bg-clip-border">
+            <div class="p-6">
+                <h6 class="mb-4">Parties au contrat</h6>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="p-4 bg-gray-50 rounded-xl border-l-4 border-fuchsia-500">
+                        <p class="text-xs font-bold text-slate-400 uppercase mb-1">Le Client</p>
+                        <p class="text-sm font-bold text-slate-700">{{ contract.creator.username }}</p>
+                        {% if contract.creator.address %}
+                            <p class="text-xxs text-slate-400">{{ contract.creator.address }}</p>
+                        {% endif %}
+                    </div>
+                    <div class="p-4 bg-gray-50 rounded-xl border-l-4 border-slate-500">
+                        <p class="text-xs font-bold text-slate-400 uppercase mb-1">Le Prestataire</p>
+                        <p class="text-sm font-bold text-slate-700">{{ contract.collaborator.companyName }}</p>
+                        <p class="text-xxs text-slate-400">Représenté par {{ contract.collaborator.name }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="w-full px-3 mb-6">
+        <div class="p-6 bg-gradient-to-tl from-slate-100 to-white rounded-2xl shadow-soft-xl">
+            <div class="flex flex-wrap items-center justify-between">
+                <div class="w-full lg:w-8/12 mb-4 lg:mb-0">
+                    <h6 class="text-xs font-bold uppercase mb-2">Lien de signature publique</h6>
+                    <p class="text-xxs text-slate-500 mb-2">Envoyez ce lien au collaborateur pour qu'il puisse signer numériquement le contrat.</p>
+                    <div class="bg-white p-2 border rounded-lg overflow-hidden flex items-center">
+                        <input type="text" readonly value="{{ url('app_public_contract_signature_view', {contractNumber: contract.contractNumber, token: contract.signatureToken}) }}" class="w-full text-xs border-0 outline-none text-fuchsia-500 font-semibold">
+                    </div>
+                </div>
+                <div class="w-full lg:w-3/12 text-center">
+                    <a href="{{ path('app_public_contract_signature_view', {contractNumber: contract.contractNumber, token: contract.signatureToken}) }}" target="_blank" class="inline-block w-full bg-white text-fuchsia-500 border border-fuchsia-500 text-xs font-bold py-3 rounded-xl uppercase hover:bg-fuchsia-50 transition-all">
+                        Tester le lien <i class="fa fa-external-link ml-1"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -2,17 +2,31 @@
 
 namespace App\Controller;
 
+use App\Repository\CategorieCoursRepository;
+use App\Repository\CoursRepository;
+use App\Repository\RessourceRepository;
+use App\Repository\UsersRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
 final class HomeController extends AbstractController
-{
-    #[Route('/', name: 'app_home')]
-    public function index(): Response
+{   
+    // READ DASHBOARD 
+    #[Route('/admin', name: 'app_admin_dashboard')]
+    public function index(
+        CategorieCoursRepository $catRepo,
+        CoursRepository $coursRepo,
+        RessourceRepository $resRepo,
+        UsersRepository $userRepo
+    ): Response
     {
-        return $this->render('home/index.html.twig', [
-            'controller_name' => 'HomeController',
+        // affichage du dashboard
+        return $this->render('back/home/index.html.twig', [
+            'count_categories' => $catRepo->count([]),
+            'count_courses' => $coursRepo->count([]),
+            'count_resources' => $resRepo->count([]),
+            'count_users' => $userRepo->count([]),
         ]);
     }
 }

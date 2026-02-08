@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\Users;
 use Symfony\Component\Form\AbstractType;
+<<<<<<< HEAD
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -11,10 +12,18 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class UserType extends AbstractType
+=======
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+
+class UsersType extends AbstractType
+>>>>>>> 78a9c3b07b2e13b54a51633550efb6f465eae808
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
+<<<<<<< HEAD
             ->add('username', TextType::class, [
                 'label' => false,
                 'attr' => [
@@ -96,6 +105,19 @@ class UserType extends AbstractType
                     ]),
                 ],
                 ])
+=======
+            ->add('username')
+            ->add('address')
+            ->add('password')
+            ->add('role', ChoiceType::class, [
+                'choices'  => [
+                    'User' => 'ROLE_USER',
+                    'Admin' => 'ROLE_ADMIN',
+                ],
+            ])
+            ->add('groupid')
+            ->add('numtel')
+>>>>>>> 78a9c3b07b2e13b54a51633550efb6f465eae808
         ;
     }
 
