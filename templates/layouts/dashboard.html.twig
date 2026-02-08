@@ -47,38 +47,40 @@
                 </li>
 
                 <!-- Collaborateurs Section -->
-                <li class="w-full mt-4">
-                    <h6 class="pl-6 ml-2 text-xs font-bold leading-tight uppercase opacity-60">Collaborations</h6>
-                </li>
+                {% if app.user and is_granted('ROLE_CONTENT_CREATOR') %}
+                    <li class="w-full mt-4">
+                        <h6 class="pl-6 ml-2 text-xs font-bold leading-tight uppercase opacity-60">Collaborations</h6>
+                    </li>
 
-                <li class="mt-0.5 w-full">
-                    <a class="py-2.7 {% if 'app_collaborator' in app.request.attributes.get('_route') %}shadow-soft-xl rounded-lg bg-white font-semibold text-slate-700{% else %}text-sm ease-nav-brand my-0 mx-4 flex items-center whitespace-nowrap px-4 transition-colors{% endif %}" href="{{ path('app_collaborator_index') }}">
-                        <div class="shadow-soft-2xl mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-white bg-center stroke-0 text-center xl:p-2.5">
-                            <i class="ni ni-single-02 {% if 'app_collaborator' in app.request.attributes.get('_route') %}text-fuchsia-500{% else %}text-slate-700{% endif %} text-xs"></i>
-                        </div>
-                        <span class="ml-1 duration-300 opacity-100 pointer-events-none ease-soft">Mes Partenaires</span>
-                    </a>
-                </li>
+                    <li class="mt-0.5 w-full">
+                        <a class="py-2.7 {% if 'app_collaborator' in app.request.attributes.get('_route') %}shadow-soft-xl rounded-lg bg-white font-semibold text-slate-700{% else %}text-sm ease-nav-brand my-0 mx-4 flex items-center whitespace-nowrap px-4 transition-colors{% endif %}" href="{{ path('app_collaborator_index') }}">
+                            <div class="shadow-soft-2xl mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-white bg-center stroke-0 text-center xl:p-2.5">
+                                <i class="ni ni-single-02 {% if 'app_collaborator' in app.request.attributes.get('_route') %}text-fuchsia-500{% else %}text-slate-700{% endif %} text-xs"></i>
+                            </div>
+                            <span class="ml-1 duration-300 opacity-100 pointer-events-none ease-soft">Mes Partenaires</span>
+                        </a>
+                    </li>
 
-                <li class="mt-0.5 w-full">
-                    <a class="py-2.7 {% if 'app_collab_request' in app.request.attributes.get('_route') %}shadow-soft-xl rounded-lg bg-white font-semibold text-slate-700{% else %}text-sm ease-nav-brand my-0 mx-4 flex items-center whitespace-nowrap px-4 transition-colors{% endif %}" href="{{ path('app_collab_request_index') }}">
-                        <div class="shadow-soft-2xl mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-white bg-center stroke-0 text-center xl:p-2.5">
-                            <i class="ni ni-bullet-list-67 {% if 'app_collab_request' in app.request.attributes.get('_route') %}text-fuchsia-500{% else %}text-slate-700{% endif %} text-xs"></i>
-                        </div>
-                        <span class="ml-1 duration-300 opacity-100 pointer-events-none ease-soft">Mes Demandes</span>
-                    </a>
-                </li>
-                
-                <li class="mt-0.5 w-full">
-                    <a class="py-2.7 {% if 'app_contract_index' in app.request.attributes.get('_route') %}shadow-soft-xl rounded-lg bg-white font-semibold text-slate-700{% else %}text-sm ease-nav-brand my-0 mx-4 flex items-center whitespace-nowrap px-4 transition-colors{% endif %}" href="{{ path('app_contract_index') }}">
-                        <div class="shadow-soft-2xl mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-white bg-center stroke-0 text-center xl:p-2.5">
-                            <i class="ni ni-paper-diploma {% if 'app_contract_index' in app.request.attributes.get('_route') %}text-fuchsia-500{% else %}text-slate-700{% endif %} text-xs"></i>
-                        </div>
-                        <span class="ml-1 duration-300 opacity-100 pointer-events-none ease-soft">Mes Contrats</span>
-                    </a>
-                </li>
+                    <li class="mt-0.5 w-full">
+                        <a class="py-2.7 {% if 'app_collab_request' in app.request.attributes.get('_route') %}shadow-soft-xl rounded-lg bg-white font-semibold text-slate-700{% else %}text-sm ease-nav-brand my-0 mx-4 flex items-center whitespace-nowrap px-4 transition-colors{% endif %}" href="{{ path('app_collab_request_index') }}">
+                            <div class="shadow-soft-2xl mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-white bg-center stroke-0 text-center xl:p-2.5">
+                                <i class="ni ni-bullet-list-67 {% if 'app_collab_request' in app.request.attributes.get('_route') %}text-fuchsia-500{% else %}text-slate-700{% endif %} text-xs"></i>
+                            </div>
+                            <span class="ml-1 duration-300 opacity-100 pointer-events-none ease-soft">Mes Demandes</span>
+                        </a>
+                    </li>
+                    
+                    <li class="mt-0.5 w-full">
+                        <a class="py-2.7 {% if 'app_contract_index' in app.request.attributes.get('_route') %}shadow-soft-xl rounded-lg bg-white font-semibold text-slate-700{% else %}text-sm ease-nav-brand my-0 mx-4 flex items-center whitespace-nowrap px-4 transition-colors{% endif %}" href="{{ path('app_contract_index') }}">
+                            <div class="shadow-soft-2xl mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-white bg-center stroke-0 text-center xl:p-2.5">
+                                <i class="ni ni-paper-diploma {% if 'app_contract_index' in app.request.attributes.get('_route') %}text-fuchsia-500{% else %}text-slate-700{% endif %} text-xs"></i>
+                            </div>
+                            <span class="ml-1 duration-300 opacity-100 pointer-events-none ease-soft">Mes Contrats</span>
+                        </a>
+                    </li>
+                {% endif %}
 
-                {% if app.user and is_granted('ROLE_MANAGER') %}
+                {% if app.user and (is_granted('ROLE_MANAGER') or (is_granted('ROLE_CONTENT_CREATOR') and app.user.managerId is empty)) %}
                     <li class="w-full mt-4">
                         <h6 class="pl-6 ml-2 text-xs font-bold leading-tight uppercase opacity-60">Espace Manager</h6>
                     </li>

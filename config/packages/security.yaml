@@ -8,7 +8,7 @@ security:
         app_user_provider:
             entity:
                 class: App\Entity\Users
-                property: username
+                property: address
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
@@ -16,15 +16,15 @@ security:
         main:
             lazy: true
             provider: app_user_provider
-            # form_login:
-            #     login_path: app_login
-            #     check_path: app_login
-            #     enable_csrf: true
-            #     default_target_path: app_home
-            # logout:
-            #     path: app_logout
-            #     # where to redirect after logout
-            #     target: app_login
+            form_login:
+                login_path: app_login
+                check_path: app_login
+                enable_csrf: true
+                default_target_path: app_home
+            logout:
+                path: app_logout
+                # where to redirect after logout
+                target: app_home
 
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#the-firewall
@@ -35,10 +35,13 @@ security:
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
-        - { path: ^/login, roles: PUBLIC_ACCESS }
-        - { path: ^/register, roles: PUBLIC_ACCESS }
-        - { path: ^/user/new, roles: PUBLIC_ACCESS }
+        - { path: ^/login$, roles: PUBLIC_ACCESS }
+        - { path: ^/user/new$, roles: PUBLIC_ACCESS }
+        - { path: ^/forum, roles: PUBLIC_ACCESS }
         - { path: ^/manager, roles: ROLE_MANAGER }
+        - { path: ^/collaborator, roles: ROLE_USER }
+        - { path: ^/collab-request, roles: ROLE_USER }
+        - { path: ^/contract, roles: ROLE_USER }
         - { path: ^/$, roles: PUBLIC_ACCESS }
         - { path: ^/, roles: [ROLE_USER, ROLE_MANAGER] }
 

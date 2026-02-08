@@ -9,6 +9,8 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Form\Extension\Core\Type\EnumType;
+use App\Enum\UserRole;
 
 class UserType extends AbstractType
 {
@@ -18,7 +20,7 @@ class UserType extends AbstractType
             ->add('username', TextType::class, [
                 'label' => false,
                 'attr' => [
-                    'placeholder' => 'Username',  
+                    'placeholder' => 'Username',
                     'class' => 'mb-4 text-sm focus:shadow-soft-primary-outline leading-5.6 ease-soft block w-full appearance-none rounded-lg border border-solid border-gray-300 bg-white bg-clip-padding py-2 px-3 font-normal text-gray-700 transition-all focus:border-fuchsia-300 focus:bg-white focus:text-gray-700 focus:outline-none focus:transition-shadow'
                 ],
                 'constraints' => [
@@ -31,13 +33,13 @@ class UserType extends AbstractType
                         'max' => 50,
                     ])
                 ],
-                
-                ])
 
-            ->add('address' , TextType::class, [
+            ])
+
+            ->add('address', TextType::class, [
                 'label' => false,
                 'attr' => [
-                    'placeholder' => 'Address',  
+                    'placeholder' => 'Address',
                     'class' => 'mb-4 text-sm focus:shadow-soft-primary-outline leading-5.6 ease-soft block w-full appearance-none rounded-lg border border-solid border-gray-300 bg-white bg-clip-padding py-2 px-3 font-normal text-gray-700 transition-all focus:border-fuchsia-300 focus:bg-white focus:text-gray-700 focus:outline-none focus:transition-shadow'
                 ],
                 'constraints' => [
@@ -48,13 +50,14 @@ class UserType extends AbstractType
                         'message' => 'Please enter a valid email address',
                     ]),
                 ],
-                ])
+            ])
 
             ->add('password', PasswordType::class, [
                 'label' => false,
                 'attr' => [
-                    'placeholder' => 'Password',  
-                    'class' => 'mb-4 text-sm focus:shadow-soft-primary-outline leading-5.6 ease-soft block w-full appearance-none rounded-lg border border-solid border-gray-300 bg-white bg-clip-padding py-2 px-3 font-normal text-gray-700 transition-all focus:border-fuchsia-300 focus:bg-white focus:text-gray-700 focus:outline-none focus:transition-shadow'
+                    'placeholder' => 'Password',
+                    'class' => 'mb-4 text-sm focus:shadow-soft-primary-outline leading-5.6 ease-soft block w-full appearance-none rounded-lg border border-solid border-gray-300 bg-white bg-clip-padding py-2 px-3 font-normal text-gray-700 transition-all focus:border-fuchsia-300 focus:bg-white focus:text-gray-700 focus:outline-none focus:transition-shadow pr-10',
+                    'id' => 'password-input'
                 ],
                 'constraints' => [
                     new Assert\NotBlank([
@@ -70,22 +73,24 @@ class UserType extends AbstractType
                         'message' => 'Your password must contain at least one uppercase letter and one number',
                     ]),
                 ],
-                ])
+            ])
 
-            ->add('role' , TextType::class, [
+            ->add('role', EnumType::class, [
+                'class' => UserRole::class,
+                'choice_label' => fn(UserRole $choice) => $choice->getLabel(),
                 'label' => false,
                 'attr' => [
-                    'placeholder' => 'Role',  
-                    'class' => 'mb-4 text-sm focus:shadow-soft-primary-outline leading-5.6 ease-soft block w-full appearance-none rounded-lg border border-solid border-gray-300 bg-white bg-clip-padding py-2 px-3 font-normal text-gray-700 transition-all focus:border-fuchsia-300 focus:bg-white focus:text-gray-700 focus:outline-none focus:transition-shadow'
-                ]])
-
-            ->add('numtel' , TextType::class, [
-                'label' => false,
-                'attr' => [
-                    'placeholder' => 'Phone Number',  
                     'class' => 'mb-4 text-sm focus:shadow-soft-primary-outline leading-5.6 ease-soft block w-full appearance-none rounded-lg border border-solid border-gray-300 bg-white bg-clip-padding py-2 px-3 font-normal text-gray-700 transition-all focus:border-fuchsia-300 focus:bg-white focus:text-gray-700 focus:outline-none focus:transition-shadow'
                 ],
-                
+            ])
+
+            ->add('numtel', TextType::class, [
+                'label' => false,
+                'attr' => [
+                    'placeholder' => 'Phone Number',
+                    'class' => 'mb-4 text-sm focus:shadow-soft-primary-outline leading-5.6 ease-soft block w-full appearance-none rounded-lg border border-solid border-gray-300 bg-white bg-clip-padding py-2 px-3 font-normal text-gray-700 transition-all focus:border-fuchsia-300 focus:bg-white focus:text-gray-700 focus:outline-none focus:transition-shadow'
+                ],
+
                 'constraints' => [
                     new Assert\NotBlank([
                         'message' => 'Please enter a phone number',
@@ -95,7 +100,7 @@ class UserType extends AbstractType
                         'message' => 'Please enter a valid 8-digit phone number',
                     ]),
                 ],
-                ])
+            ])
         ;
     }
 
