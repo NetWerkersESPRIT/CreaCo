@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: CommentRepository::class)]
 class Comment
@@ -16,25 +17,39 @@ class Comment
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(type: 'text')]
+    #[Assert\NotBlank(message: "Le contenu du commentaire est obligatoire.")]
+    #[Assert\Length(min: 2, minMessage: "Le commentaire doit contenir au moins {{ limit }} caractères.")]
     private ?string $body = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $status = null;
+    #[ORM\Column(length: 50)]
+    #[Assert\NotBlank(message: "Le statut est obligatoire.")]
+    #[Assert\Choice(
+        choices: ["visible", "hidden", "solution"],
+        message: "Statut invalide. Choisis: visible, hidden, solution."
+    )]
+    private ?string $status = "visible";
 
     #[ORM\Column]
-    private ?int $likes = null;
+    #[Assert\PositiveOrZero(message: "Le nombre de likes doit être >= 0.")]
+    private int $likes = 0;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $created_at = null;
 
+<<<<<<< HEAD
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $updated_at = null;
+=======
+    #[ORM\Column(nullable: true)]
+    private ?\DateTimeImmutable $updatedAt = null;
+>>>>>>> main
 
     #[ORM\ManyToOne(inversedBy: 'comments')]
     #[ORM\JoinColumn(nullable: false, name: "post_id", referencedColumnName: "id")]
     private ?Post $post = null;
 
+<<<<<<< HEAD
     #[ORM\ManyToOne(targetEntity: Users::class)]
     #[ORM\JoinColumn(name: "user_id", referencedColumnName: "id")]
     private ?Users $user = null;
@@ -42,18 +57,37 @@ class Comment
     #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'replies')]
     #[ORM\JoinColumn(name: "replay_id", referencedColumnName: "id")]
     private ?self $replay = null;
+=======
+    #[ORM\ManyToOne(inversedBy: 'comments')]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?Users $user = null;
+
+    
+    #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'replies')]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'CASCADE')]
+    private ?self $parentComment = null;
+>>>>>>> main
 
     /**
      * @var Collection<int, self>
      */
+<<<<<<< HEAD
     #[ORM\OneToMany(targetEntity: self::class, mappedBy: 'replay')]
+=======
+    #[ORM\OneToMany(targetEntity: self::class, mappedBy: 'parentComment', cascade: ['remove'])]
+>>>>>>> main
     private Collection $replies;
 
     public function __construct()
     {
+<<<<<<< HEAD
         $this->replies = new ArrayCollection();
         $this->created_at = new \DateTime();
         $this->updated_at = new \DateTime();
+=======
+        $this->createdAt = new \DateTimeImmutable();
+        $this->replies = new ArrayCollection();
+>>>>>>> main
     }
 
     public function getId(): ?int
@@ -69,7 +103,6 @@ class Comment
     public function setBody(string $body): static
     {
         $this->body = $body;
-
         return $this;
     }
 
@@ -81,11 +114,10 @@ class Comment
     public function setStatus(string $status): static
     {
         $this->status = $status;
-
         return $this;
     }
 
-    public function getLikes(): ?int
+    public function getLikes(): int
     {
         return $this->likes;
     }
@@ -93,7 +125,6 @@ class Comment
     public function setLikes(int $likes): static
     {
         $this->likes = $likes;
-
         return $this;
     }
 
@@ -104,8 +135,12 @@ class Comment
 
     public function setCreatedAt(\DateTimeInterface $created_at): static
     {
+<<<<<<< HEAD
         $this->created_at = $created_at;
 
+=======
+        $this->createdAt = $createdAt;
+>>>>>>> main
         return $this;
     }
 
@@ -114,10 +149,16 @@ class Comment
         return $this->updated_at;
     }
 
+<<<<<<< HEAD
     public function setUpdatedAt(\DateTimeInterface $updated_at): static
     {
         $this->updated_at = $updated_at;
 
+=======
+    public function setUpdatedAt(?\DateTimeImmutable $updatedAt): static
+    {
+        $this->updatedAt = $updatedAt;
+>>>>>>> main
         return $this;
     }
 
@@ -129,7 +170,6 @@ class Comment
     public function setPost(?Post $post): static
     {
         $this->post = $post;
-
         return $this;
     }
 
@@ -141,19 +181,17 @@ class Comment
     public function setUser(?Users $user): static
     {
         $this->user = $user;
-
         return $this;
     }
 
-    public function getReplay(): ?self
+    public function getParentComment(): ?self
     {
-        return $this->replay;
+        return $this->parentComment;
     }
 
-    public function setReplay(?self $replay): static
+    public function setParentComment(?self $parentComment): static
     {
-        $this->replay = $replay;
-
+        $this->parentComment = $parentComment;
         return $this;
     }
 
@@ -169,21 +207,28 @@ class Comment
     {
         if (!$this->replies->contains($reply)) {
             $this->replies->add($reply);
+<<<<<<< HEAD
             $reply->setReplay($this);
+=======
+            $reply->setParentComment($this);
+>>>>>>> main
         }
-
         return $this;
     }
 
     public function removeReply(self $reply): static
     {
         if ($this->replies->removeElement($reply)) {
+<<<<<<< HEAD
             // set the owning side to null (unless already changed)
             if ($reply->getReplay() === $this) {
                 $reply->setReplay(null);
+=======
+            if ($reply->getParentComment() === $this) {
+                $reply->setParentComment(null);
+>>>>>>> main
             }
         }
-
         return $this;
     }
 }
