@@ -1,0 +1,75 @@
+{% extends 'layouts/public.html.twig' %}
+
+{% block title %}Signature de votre contrat - {{ contract.contractNumber }}{% endblock %}
+
+{% block header_title %}Contrat de Collaboration{% endblock %}
+{% block header_subtitle %}Veuillez prendre connaissance du document ci-dessous avant de procéder à la signature.{% endblock %}
+
+{% block body %}
+<div class="bg-white rounded-2xl shadow-soft-2xl p-8 mb-8">
+    <!-- Contract Preview Wrap -->
+    <div class="mb-12 border rounded-xl overflow-hidden bg-gray-50 p-2">
+        <div class="bg-white shadow-inner p-8 text-sm text-slate-700 min-h-[600px] leading-relaxed">
+            <div class="text-center mb-12">
+                <h2 class="text-xl font-bold uppercase tracking-widest border-b pb-4 inline-block">Contrat de Prestation de Services</h2>
+                <p class="mt-4">Référence : <b>{{ contract.contractNumber }}</b></p>
+                <p>Établi le {{ contract.createdAt|date('d/m/Y') }}</p>
+            </div>
+
+            <div class="mb-8">
+                <p class="mb-4">Il a été convenu ce qui suit entre :</p>
+                <p class="mb-2"><b>D'une part :</b> Le Client, <b>{{ contract.collabRequest.creator.username }}</b> (CreaCo Ecosystem).</p>
+                <p><b>D'autre part :</b> Le Prestataire, <b>{{ contract.collabRequest.collaborator.companyName }}</b>, représenté par <b>{{ contract.collabRequest.collaborator.name }}</b>.</p>
+            </div>
+
+            <h6 class="font-bold border-b mb-4">ARTICLE 1 - OBJET</h6>
+            <p class="mb-6">Le Prestataire s'engage à réaliser la mission suivante pour le compte du Client : <br><b>{{ contract.collabRequest.title }}</b></p>
+            <p class="italic text-slate-500 mb-8">{{ contract.collabRequest.description }}</p>
+
+            <h6 class="font-bold border-b mb-4">ARTICLE 2 - LIVRABLES</h6>
+            <p class="mb-8">{{ contract.collabRequest.deliverables|default('Voir détails techniques joints.')|nl2br }}</p>
+
+            <h6 class="font-bold border-b mb-4">ARTICLE 3 - DURÉE & RÉTRIBUTION</h6>
+            <p class="mb-2">La mission débutera le <b>{{ contract.collabRequest.startDate|date('d/m/Y') }}</b> et s'achèvera le <b>{{ contract.collabRequest.endDate|date('d/m/Y') }}</b>.</p>
+            <p>En contrepartie, le Client versera au Prestataire la somme forfaitaire de <b>{{ contract.collabRequest.budget|number_format(2, ',', ' ') }} € HT</b>.</p>
+        </div>
+    </div>
+
+    {% if contract.status == 'GENERATED' %}
+        <div class="flex flex-wrap -mx-3 items-end">
+            <div class="w-full lg:w-7/12 px-3">
+                <h5 class="mb-4">Signature Électronique</h5>
+                <form method="post" action="{{ path('app_public_contract_signature_accept', {contractNumber: contract.contractNumber, token: contract.signatureToken}) }}">
+                    <div class="mb-4">
+                        <label class="text-xs font-bold uppercase text-slate-400 mb-1 block">Saisissez votre nom complet pour valider la signature</label>
+                        <input type="text" name="full_name" placeholder="Ex: Jean DUPONT" required class="w-full p-3 border rounded-xl outline-none focus:border-fuchsia-300 transition-all font-bold text-slate-700">
+                    </div>
+                    <p class="text-[10px] text-slate-400 mb-6 italic">En cliquant sur "Accepter et Signer", vous reconnaissez avoir pris connaissance des termes et vous engagez à les respecter numériquement.</p>
+                    <button type="submit" class="w-full bg-gradient-to-tl from-green-600 to-lime-400 text-white font-bold py-4 rounded-2xl uppercase shadow-soft-xl hover:scale-102 transition-all">
+                        <i class="fa fa-pen-nib mr-2"></i> Accepter et Signer le contrat
+                    </button>
+                </form>
+            </div>
+            <div class="w-full lg:w-5/12 px-3 lg:border-l lg:mt-0 mt-12">
+                <div class="p-6 bg-red-50 rounded-2xl">
+                    <h6 class="text-red-600 uppercase text-xs font-bold mb-4">Un problème avec le contrat ?</h6>
+                    <p class="text-xs text-red-800 mb-6">Si les termes ne vous conviennent pas, vous pouvez refuser la signature en indiquant un motif.</p>
+                    <button onclick="document.getElementById('rejection-area').classList.toggle('hidden')" class="text-xs font-bold text-red-600 underline">Refuser la signature</button>
+                    
+                    <div id="rejection-area" class="hidden mt-4 pt-4 border-t border-red-200">
+                        <form method="post" action="{{ path('app_public_contract_signature_reject', {contractNumber: contract.contractNumber, token: contract.signatureToken}) }}">
+                            <textarea name="rejection_reason" class="w-full text-xs p-3 border border-red-200 rounded-lg outline-none mb-3" rows="3" placeholder="Indiquez ici le motif du refus..."></textarea>
+                            <button type="submit" class="w-full bg-red-600 text-white py-2 rounded-lg text-xs font-bold uppercase transition-opacity hover:opacity-90">Confirmer le refus</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <div class="text-center p-12 bg-gray-50 rounded-2xl border-2 border-dashed">
+            <h4 class="text-slate-400">Ce contrat a déjà été traité.</h4>
+            <p class="text-sm text-slate-500 mt-2">Le statut actuel est : <b>{{ contract.status }}</b></p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

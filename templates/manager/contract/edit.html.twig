@@ -1,0 +1,93 @@
+{% extends 'layouts/dashboard.html.twig' %}
+
+{% block title %}Finaliser le Contrat - CreaCo{% endblock %}
+{% block breadcrumb %}Manager / Contrats / Édition{% endblock %}
+{% block page_title %}Finalisation du contrat {{ contract.contractNumber }}{% endblock %}
+
+{% block body %}
+<div class="flex flex-wrap -mx-3">
+    <!-- Main Edit Form -->
+    <div class="w-full max-w-full px-3 mb-6">
+        <div class="relative flex flex-col min-w-0 break-words bg-white border-0 shadow-soft-xl rounded-2xl bg-clip-border">
+            <div class="p-6">
+                <div class="flex flex-wrap justify-between items-center mb-6">
+                    <h6 class="font-bold">Informations contractuelles</h6>
+                    <span class="text-xs text-slate-400">Modification du contrat {{ contract.contractNumber }}</span>
+                </div>
+                
+                {{ form_start(form) }}
+                    <div class="mb-4">
+                        {{ form_label(form.title, null, {'label_attr': {'class': 'mb-2 ml-1 font-bold text-xs text-slate-700'}}) }}
+                        {{ form_widget(form.title, {'attr': {'class': 'focus:shadow-soft-primary-outline text-sm leading-5.6 ease-soft block w-full appearance-none rounded-lg border border-solid border-gray-300 bg-white bg-clip-padding px-3 py-2 font-normal text-gray-700 outline-none transition-all placeholder:text-gray-500 focus:border-fuchsia-300 focus:outline-none'}}) }}
+                        {{ form_errors(form.title) }}
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="mb-4">
+                            {{ form_label(form.startDate, null, {'label_attr': {'class': 'mb-2 ml-1 font-bold text-xs text-slate-700'}}) }}
+                            {{ form_widget(form.startDate, {'attr': {'class': 'focus:shadow-soft-primary-outline text-sm leading-5.6 ease-soft block w-full appearance-none rounded-lg border border-solid border-gray-300 bg-white bg-clip-padding px-3 py-2 font-normal text-gray-700 outline-none transition-all placeholder:text-gray-500 focus:border-fuchsia-300 focus:outline-none'}}) }}
+                        </div>
+                        <div class="mb-4">
+                            {{ form_label(form.endDate, null, {'label_attr': {'class': 'mb-2 ml-1 font-bold text-xs text-slate-700'}}) }}
+                            {{ form_widget(form.endDate, {'attr': {'class': 'focus:shadow-soft-primary-outline text-sm leading-5.6 ease-soft block w-full appearance-none rounded-lg border border-solid border-gray-300 bg-white bg-clip-padding px-3 py-2 font-normal text-gray-700 outline-none transition-all placeholder:text-gray-500 focus:border-fuchsia-300 focus:outline-none'}}) }}
+                        </div>
+                        <div class="mb-4">
+                            {{ form_label(form.amount, null, {'label_attr': {'class': 'mb-2 ml-1 font-bold text-xs text-slate-700'}}) }}
+                            {{ form_widget(form.amount, {'attr': {'class': 'focus:shadow-soft-primary-outline text-sm leading-5.6 ease-soft block w-full appearance-none rounded-lg border border-solid border-gray-300 bg-white bg-clip-padding px-3 py-2 font-normal text-gray-700 outline-none transition-all placeholder:text-gray-500 focus:border-fuchsia-300 focus:outline-none'}}) }}
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        {{ form_label(form.terms, null, {'label_attr': {'class': 'mb-2 ml-1 font-bold text-xs text-slate-700'}}) }}
+                        {{ form_widget(form.terms, {'attr': {'class': 'focus:shadow-soft-primary-outline text-sm leading-5.6 ease-soft block w-full appearance-none rounded-lg border border-solid border-gray-300 bg-white bg-clip-padding px-3 py-2 font-normal text-gray-700 outline-none transition-all placeholder:text-gray-500 focus:border-fuchsia-300 focus:outline-none'}}) }}
+                    </div>
+
+                    <div class="mb-4">
+                        {{ form_label(form.paymentSchedule, null, {'label_attr': {'class': 'mb-2 ml-1 font-bold text-xs text-slate-700'}}) }}
+                        {{ form_widget(form.paymentSchedule, {'attr': {'class': 'focus:shadow-soft-primary-outline text-sm leading-5.6 ease-soft block w-full appearance-none rounded-lg border border-solid border-gray-300 bg-white bg-clip-padding px-3 py-2 font-normal text-gray-700 outline-none transition-all placeholder:text-gray-500 focus:border-fuchsia-300 focus:outline-none'}}) }}
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="mb-4">
+                            {{ form_label(form.confidentialityClause, null, {'label_attr': {'class': 'mb-2 ml-1 font-bold text-xs text-slate-700'}}) }}
+                            {{ form_widget(form.confidentialityClause, {'attr': {'class': 'focus:shadow-soft-primary-outline text-sm leading-5.6 ease-soft block w-full appearance-none rounded-lg border border-solid border-gray-300 bg-white bg-clip-padding px-3 py-2 font-normal text-gray-700 outline-none transition-all placeholder:text-gray-500 focus:border-fuchsia-300 focus:outline-none'}}) }}
+                        </div>
+                        <div class="mb-4">
+                            {{ form_label(form.cancellationTerms, null, {'label_attr': {'class': 'mb-2 ml-1 font-bold text-xs text-slate-700'}}) }}
+                            {{ form_widget(form.cancellationTerms, {'attr': {'class': 'focus:shadow-soft-primary-outline text-sm leading-5.6 ease-soft block w-full appearance-none rounded-lg border border-solid border-gray-300 bg-white bg-clip-padding px-3 py-2 font-normal text-gray-700 outline-none transition-all placeholder:text-gray-500 focus:border-fuchsia-300 focus:outline-none'}}) }}
+                        </div>
+                    </div>
+
+                    <div class="flex justify-end mt-8 space-x-3">
+                        <a href="{{ path('app_manager_contract_show', {id: contract.id}) }}" class="px-6 py-3 font-bold text-slate-500 uppercase transition-all bg-transparent border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50 text-xs">Annuler</a>
+                        <button type="submit" class="px-10 py-3 font-bold text-white uppercase transition-all bg-fuchsia-500 border-0 rounded-lg cursor-pointer hover:shadow-soft-xs active:opacity-85 text-xs shadow-soft-md bg-gradient-to-tl from-purple-700 to-pink-500">Enregistrer les modifications</button>
+                    </div>
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+
+    <!-- Brief Context stacked below -->
+    <div class="w-full max-w-full px-3">
+        <div class="p-6 bg-slate-50 rounded-2xl border border-slate-100 flex flex-wrap justify-between items-center">
+            <div class="mb-4 lg:mb-0">
+                <h6 class="text-xs font-bold uppercase mb-2">Contexte de la mission</h6>
+                <div class="flex space-x-6">
+                    <div>
+                        <p class="text-[10px] font-bold text-slate-400 uppercase">Client</p>
+                        <p class="text-xs font-bold">{{ contract.creator.username }}</p>
+                    </div>
+                    <div>
+                        <p class="text-[10px] font-bold text-slate-400 uppercase">Collaborateur</p>
+                        <p class="text-xs font-bold">{{ contract.collaborator.companyName }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="max-w-md">
+                <p class="text-[10px] font-bold text-fuchsia-500 uppercase mb-1">Instructions initiales</p>
+                <p class="text-[11px] italic text-slate-600">"{{ contract.collabRequest.description }}"</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
