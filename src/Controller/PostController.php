@@ -125,6 +125,11 @@ final class PostController extends AbstractController
         $commentForm->handleRequest($request);
 
         if ($commentForm->isSubmitted()) {
+            // Check if post is blocked
+            if ($post->getStatus() === 'blocked' && !$this->isGranted('ROLE_MANAGER')) {
+                $this->addFlash('danger', 'Cette discussion est bloquée par un administrateur. Vous ne pouvez plus commenter.');
+                return $this->redirectToRoute('forum_show', ['id' => $post->getId()]);
+            }
             if ($commentForm->isValid()) {
                 $comment->setPost($post);
                 
@@ -157,6 +162,11 @@ final class PostController extends AbstractController
 
         // Handle manual reply (nested)
         if ($request->isMethod('POST') && $request->request->has('comment_body')) {
+            // Check if post is blocked
+            if ($post->getStatus() === 'blocked' && !$this->isGranted('ROLE_MANAGER')) {
+                $this->addFlash('danger', 'Cette discussion est bloquée par un administrateur. Vous ne pouvez plus répondre.');
+                return $this->redirectToRoute('forum_show', ['id' => $post->getId()]);
+            }
             $body = $request->request->get('comment_body');
             $parentId = $request->request->get('parent_id');
 
@@ -339,5 +349,25 @@ final class PostController extends AbstractController
         $em->flush();
 
         return $this->redirectToRoute('forum_index');
+    }
+
+    #[Route('/{id}/toggle-lock', name: 'app_post_toggle_lock', methods: ['POST'], requirements: ['id' => '\d+'])]
+    public function toggleLock(Post $post, EntityManagerInterface $em): Response
+    {
+        if (!$this->isGranted('ROLE_MANAGER')) {
+            $this->addFlash('danger', 'Action réservée aux managers.');
+            return $this->redirectToRoute('forum_show', ['id' => $post->getId()]);
+        }
+
+        if ($post->getStatus() === 'blocked') {
+            $post->setStatus('published');
+            $this->addFlash('success', 'La discussion a été débloquée.');
+        } else {
+            $post->setStatus('blocked');
+            $this->addFlash('warning', 'La discussion a été bloquée par un administrateur.');
+        }
+
+        $em->flush();
+        return $this->redirectToRoute('forum_show', ['id' => $post->getId()]);
     }
 }

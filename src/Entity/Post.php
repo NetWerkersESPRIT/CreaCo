@@ -32,8 +32,8 @@ class Post
     #[ORM\Column(length: 50)]
     #[Assert\NotBlank(message: "Le statut est obligatoire.")]
     #[Assert\Choice(
-        choices: ["draft", "published", "solved"],
-        message: "Statut invalide. Choisis: draft, published, solved."
+        choices: ["draft", "published", "solved", "blocked"],
+        message: "Statut invalide. Choisis: draft, published, solved, blocked."
     )]
     private ?string $status = "published";
 

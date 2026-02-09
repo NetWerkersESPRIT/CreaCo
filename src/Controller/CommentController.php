@@ -94,7 +94,7 @@ final class CommentController extends AbstractController
              return $this->redirectToRoute('forum_show', ['id' => $comment->getPost()->getId()]);
         }
 
-        if ($comment->getUser() === $user || $comment->getPost()->getUser() === $user) {
+        if ($comment->getUser() === $user || $comment->getPost()->getUser() === $user || $this->isGranted('ROLE_MANAGER')) {
             $newStatus = ($comment->getStatus() === 'hidden') ? 'visible' : 'hidden';
             $comment->setStatus($newStatus);
             $em->flush();

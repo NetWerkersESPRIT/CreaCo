@@ -129,9 +129,42 @@
 					</div>
 
 					<!-- Comment Form (Restyled to match design) -->
-					{% if post.status != 'solved' %}
+					{% if post.status == 'blocked' and not is_granted('ROLE_MANAGER') %}
+						<div class="mb-8 p-6 bg-red-50/50 rounded-2xl border border-red-100 text-center">
+							<i class="fas fa-ban text-red-500 mb-2 text-xl"></i>
+							<p class="text-sm font-bold text-red-800 mb-0">
+								Cette discussion a été bloquée par un administrateur. Les commentaires sont désactivés.
+							</p>
+						</div>
+					{% elseif post.status == 'solved' %}
+						<div class="mb-8 p-6 bg-green-50/50 rounded-2xl border border-green-100 text-center">
+							<i class="fas fa-lock text-green-600 mb-2 text-xl"></i>
+							<p class="text-sm font-bold text-green-800 mb-0">
+								Cette discussion est résolue et fermée aux nouveaux commentaires.
+							</p>
+						</div>
+					{% else %}
 						<div class="mb-10 bg-gray-50/40 rounded-3xl border border-gray-100/50 p-6 shadow-soft-xs">
-							<h6 class="font-bold text-sm text-slate-700 mb-4">Laisser un commentaire</h6>
+							<div class="flex justify-between items-center mb-4">
+								<h6 class="font-bold text-sm text-slate-700">Laisser un commentaire</h6>
+								{% if is_granted('ROLE_MANAGER') %}
+									<form action="{{ path('app_post_toggle_lock', {'id': post.id}) }}" method="POST" class="m-0">
+										<button type="submit" class="text-xs font-bold uppercase {{ post.status == 'blocked' ? 'text-green-600 hover:text-green-700' : 'text-red-500 hover:text-red-700' }} bg-transparent border-0 cursor-pointer transition-colors" onclick="return confirm('Confirmer cette action ?')">
+											<i class="fas {{ post.status == 'blocked' ? 'fa-unlock' : 'fa-lock' }} mr-1"></i>
+											{{ post.status == 'blocked' ? 'Débloquer la discussion' : 'Bloquer la discussion' }}
+										</button>
+									</form>
+								{% endif %}
+							</div>
+
+							{% if post.status == 'blocked' and is_granted('ROLE_MANAGER') %}
+								<div class="mb-4 p-3 bg-red-50 rounded-lg border border-red-100 text-center">
+									<p class="text-xs text-red-600 font-bold mb-0">
+										<i class="fas fa-info-circle mr-1"></i>
+										Discussion bloquée pour les utilisateurs, mais visible pour vous (Manager).</p>
+								</div>
+							{% endif %}
+
 							{{ form_start(commentForm, {'attr': {'novalidate': 'novalidate'}}) }}
 							<div class="mb-4">
 								<label class="mb-2 ml-1 font-bold text-xs text-slate-700">Contenu</label>
@@ -152,13 +185,6 @@
 								</button>
 							</div>
 							{{ form_end(commentForm) }}
-						</div>
-					{% else %}
-						<div class="mb-8 p-6 bg-green-50/50 rounded-2xl border border-green-100 text-center">
-							<i class="fas fa-lock text-green-600 mb-2 text-xl"></i>
-							<p class="text-sm font-bold text-green-800 mb-0">
-								Cette discussion est résolue et fermée aux nouveaux commentaires.
-							</p>
 						</div>
 					{% endif %}
 
@@ -200,14 +226,16 @@
 													</a>
 												{% endif %}
 
-												{% if isAuthorized %}
+												{% if isAuthorized or (app.user.role == 'ROLE_MANAGER') %}
 													<form action="{{ path('app_comment_toggle_hide', {'id': comment.id}) }}" method="POST" class="inline m-0">
 														<button type="submit" class="bg-transparent border-0 p-0 text-[10px] font-bold text-slate-400 hover:text-orange-500 uppercase cursor-pointer transition-all flex items-center">
-															<i class="fas {{ comment.status == 'hidden' ? 'fa-eye' : 'fa-eye-slash' }} mr-1"></i>
-															{{ comment.status == 'hidden' ? 'Visible' : 'Masquer' }}
+															<i class="fas {{ comment.status == 'hidden' ? 'fa-eye' : 'fa-ban' }} mr-1"></i>
+															{{ comment.status == 'hidden' ? 'Débloquer' : 'Bloquer' }}
 														</button>
 													</form>
+												{% endif %}
 
+												{% if isAuthorized %}
 													<a href="{{ path('app_comment_edit', {'id': comment.id}) }}" class="text-[10px] font-bold text-slate-400 hover:text-purple-600 uppercase transition-all flex items-center">
 														<i class="fas fa-edit mr-1"></i>
 													</a>
@@ -228,7 +256,7 @@
 											<span class="mr-4 cursor-pointer hover:text-slate-600 transition-colors">
 												<i class="far fa-thumbs-up mr-1 text-xs"></i>
 												{{ comment.likes }}</span>
-											{% if post.status != 'solved' %}
+											{% if post.status != 'solved' and post.status != 'blocked' %}
 												<button onclick="document.getElementById('reply-form-{{ comment.id }}').classList.toggle('hidden')" class="bg-transparent border-0 p-0 text-xxs font-bold text-slate-400 hover:text-purple-700 uppercase cursor-pointer transition-all">
 													<i class="fas fa-reply mr-1"></i>
 													Répondre

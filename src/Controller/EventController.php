@@ -84,14 +84,12 @@ final class EventController extends AbstractController
     #[Route('/event/{id}/reserve', name: 'event_reserve', requirements: ['id' => '\d+'])]
     public function reserve(Event $event, EntityManagerInterface $em): Response
     {
-        // Assuming user is logged in
-        /** @var \App\Entity\Users $user */
+        
         $user = $this->getUser();
         if (!$user) {
-            return $this->redirectToRoute('app_login'); // Or handle error
+            return $this->redirectToRoute('app_login'); 
         }
 
-        // Check if already reserved
         foreach ($event->getReservations() as $reservation) {
             if ($reservation->getUser() === $user) {
                 $this->addFlash('warning', 'You have already reserved this event.');
