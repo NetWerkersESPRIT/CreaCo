@@ -41,6 +41,24 @@
               <span class="ml-1 duration-300 opacity-100 pointer-events-none ease-soft">Forum</span>
             </a>
           </li>
+          {% if app_user %}
+          <li class="mt-0.5 w-full">
+            <a class="py-2.7 text-sm ease-nav-brand my-0 mx-4 flex items-center whitespace-nowrap px-4 transition-colors text-red-500 hover:text-red-700" href="{{ path('app_logout') }}">
+              <div class="bg-gradient-to-tl from-red-600 to-orange-400 shadow-soft-2xl mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-white bg-center stroke-0 text-center xl:p-2.5">
+                <i class="fas fa-sign-out-alt text-white"></i>
+              </div>
+              <span class="ml-1 duration-300 opacity-100 pointer-events-none ease-soft">Déconnexion</span>
+            </a>
+          </li>
+          {% else %}
+          <li class="mt-0.5 w-full">
+            <a class="py-2.7 {{ app.request.get('_route') == 'app_auth' ? 'shadow-soft-xl rounded-lg bg-white font-semibold text-slate-700' : '' }} text-sm ease-nav-brand my-0 mx-4 flex items-center whitespace-nowrap px-4 transition-colors" href="{{ path('app_auth') }}">
+              <div class="bg-gradient-to-tl from-gray-400 to-slate-500 shadow-soft-2xl mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-white bg-center stroke-0 text-center xl:p-2.5">
+                <i class="fas fa-sign-in-alt text-white"></i>
+              </div>
+              <span class="ml-1 duration-300 opacity-100 pointer-events-none ease-soft">Connexion</span>
+            </a>
+          </li>
           <li class="mt-0.5 w-full">
             <a class="py-2.7 {{ app.request.get('_route') == 'app_useradd' ? 'shadow-soft-xl rounded-lg bg-white font-semibold text-slate-700' : '' }} text-sm ease-nav-brand my-0 mx-4 flex items-center whitespace-nowrap px-4 transition-colors" href="{{ path('app_useradd') }}">
               <div class="bg-gradient-to-tl from-purple-700 to-pink-500 shadow-soft-2xl mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-white bg-center stroke-0 text-center xl:p-2.5">
@@ -49,6 +67,7 @@
               <span class="ml-1 duration-300 opacity-100 pointer-events-none ease-soft">Inscription</span>
             </a>
           </li>
+          {% endif %}
 {# Sidebar link removed per user request #}
         </ul>
       </div>
@@ -82,12 +101,16 @@
             </div>
             <ul class="flex flex-row justify-end pl-0 mb-0 list-none md-max:w-full">
               <li class="flex items-center">
-                {% if app.user %}
+                {% if app_user %}
                   <div class="flex items-center space-x-2 bg-gray-50 px-3 py-1.5 rounded-xl border border-gray-100 shadow-soft-xs">
-                    <img src="https://ui-avatars.com/api/?name={{ app.user.username }}&background=cb0c9f&color=fff" class="w-8 h-8 rounded-lg shadow-soft-sm" alt="user profile">
-                    <span class="text-xs font-bold text-slate-700">{{ app.user.username }} <i class="fas fa-check-circle text-purple-500 text-[10px] ml-0.5"></i></span>
-                    <span class="text-[10px] text-slate-400 capitalize px-2 py-0.5 bg-white border border-gray-100 rounded-lg">{{ app.user.role }}</span>
+                    <img src="https://ui-avatars.com/api/?name={{ app_user.username }}&background=cb0c9f&color=fff" class="w-8 h-8 rounded-lg shadow-soft-sm" alt="user profile">
+                    <span class="text-xs font-bold text-slate-700">{{ app_user.username }} <i class="fas fa-check-circle text-purple-500 text-[10px] ml-0.5"></i></span>
+                    <span class="text-[10px] text-slate-400 capitalize px-2 py-0.5 bg-white border border-gray-100 rounded-lg">{{ app_user.role }}</span>
                   </div>
+                {% else %}
+                  <a href="{{ path('app_auth') }}" class="px-4 py-2 text-xs font-bold text-center text-white uppercase align-middle transition-all bg-transparent border-0 rounded-lg cursor-pointer shadow-soft-md bg-x-25 bg-150 leading-pro ease-soft-in tracking-tight-soft bg-gradient-to-tl from-purple-700 to-pink-500 hover:scale-102 hover:shadow-soft-xs active:opacity-85">
+                    Sign In
+                  </a>
                 {% endif %}
               </li>
             </ul>

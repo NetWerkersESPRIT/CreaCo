@@ -17,6 +17,7 @@ final class AuthController extends AbstractController
     {
         return $this->render('auth/index.html.twig', [
             'controller_name' => 'AuthController',
+            'error' => null,
         ]);
     }
 
@@ -47,20 +48,30 @@ public function loginCheck(Request $request, EntityManagerInterface $em): Respon
     }
 
     // ✅ redirect by role
-    switch ($user->getRole()) {
-        case 'Content Creator':
-            return $this->redirectToRoute('app_home');
+    if ($user) {
+        $request->getSession()->set('user_id', $user->getId());
+        $request->getSession()->set('user_role', $user->getRole());
+        $request->getSession()->set('username', $user->getUsername());
+        
+        $this->addFlash('success', 'Welcome back, ' . $user->getUsername() . '!');
+        
+        switch ($user->getRole()) {
+            case 'Content Creator':
+                return $this->redirectToRoute('app_home');
 
-        case 'Admin':
-            return $this->redirectToRoute('app_admin');
+            case 'Admin':
+                return $this->redirectToRoute('app_admin');
 
-        default:
-            $error = 'Unknown role';
-            return $this->render('auth/login.html.twig', [
-                'error' => $error,
-                'email' => $email
-            ]);
+            default:
+                return $this->redirectToRoute('app_home');
+        }
     }
+
+    $error = 'Unknown error';
+    return $this->render('auth/index.html.twig', [
+        'error' => $error,
+        'email' => $email
+    ]);
 }
 
 }
