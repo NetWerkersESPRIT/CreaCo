@@ -1,0 +1,45 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des Tâches{% endblock %}
+
+{% block body %}
+    <h1>Liste des Tâches</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Titre</th>
+                <th>Description</th>
+                <th>État</th>
+                <th>Assigné à</th>
+                <th>Mission</th>
+                <th>Date limite</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for task in tasks %}
+            <tr>
+                <td>{{ task.id }}</td>
+                <td>{{ task.title }}</td>
+                <td>{{ task.description }}</td>
+                <td>{{ task.state }}</td>
+                <td>{{ task.assumedBy ? task.assumedBy.username : 'N/A' }}</td>
+                <td>{{ task.belongTo ? task.belongTo.title : 'N/A' }}</td>
+                <td>{{ task.timeTlimit ? task.timeTlimit|date('Y-m-d H:i:s') : '' }}</td>
+                <td>
+                    <a href="{{ path('app_task_show', {'id': task.id}) }}">Voir</a>
+                    <a href="{{ path('app_task_edit', {'id': task.id}) }}">Modifier</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="8">Aucune tâche trouvée</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_task_new') }}">Créer une nouvelle tâche</a>
+{% endblock %}

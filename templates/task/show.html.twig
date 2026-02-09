@@ -1,0 +1,54 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Tâche{% endblock %}
+
+{% block body %}
+    <h1>Tâche</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ task.id }}</td>
+            </tr>
+            <tr>
+                <th>Titre</th>
+                <td>{{ task.title }}</td>
+            </tr>
+            <tr>
+                <th>Description</th>
+                <td>{{ task.description }}</td>
+            </tr>
+            <tr>
+                <th>État</th>
+                <td>{{ task.state }}</td>
+            </tr>
+            <tr>
+                <th>Assigné à</th>
+                <td>{{ task.assumedBy ? task.assumedBy.username : 'N/A' }}</td>
+            </tr>
+            <tr>
+                <th>Mission</th>
+                <td>{{ task.belongTo ? task.belongTo.title : 'N/A' }}</td>
+            </tr>
+            <tr>
+                <th>Créé par</th>
+                <td>{{ task.issuedBy ? task.issuedBy.username : 'N/A' }}</td>
+            </tr>
+            <tr>
+                <th>Date limite</th>
+                <td>{{ task.timeTlimit ? task.timeTlimit|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>Créé le</th>
+                <td>{{ task.cratedAt ? task.cratedAt|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_task_index') }}">Retour à la liste</a>
+
+    <a href="{{ path('app_task_edit', {'id': task.id}) }}">Modifier</a>
+
+    {{ include('task/_delete_form.html.twig') }}
+{% endblock %}

@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Idée{% endblock %}
+
+{% block body %}
+    <h1>Idée</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ idea.id }}</td>
+            </tr>
+            <tr>
+                <th>Titre</th>
+                <td>{{ idea.title }}</td>
+            </tr>
+            <tr>
+                <th>Description</th>
+                <td>{{ idea.description }}</td>
+            </tr>
+            <tr>
+                <th>Catégorie</th>
+                <td>{{ idea.category }}</td>
+            </tr>
+            <tr>
+                <th>Créé le</th>
+                <td>{{ idea.createdAt ? idea.createdAt|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_tsk_index') }}">Retour à la liste</a>
+
+    <a href="{{ path('app_tsk_edit', {'id': idea.id}) }}">Modifier</a>
+
+    {{ include('tsk/_delete_form.html.twig') }}
+{% endblock %}

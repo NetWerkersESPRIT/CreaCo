@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des Idées{% endblock %}
+
+{% block body %}
+    <h1>Liste des Idées</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Titre</th>
+                <th>Description</th>
+                <th>Catégorie</th>
+                <th>Créé le</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for idea in ideas %}
+            <tr>
+                <td>{{ idea.id }}</td>
+                <td>{{ idea.title }}</td>
+                <td>{{ idea.description }}</td>
+                <td>{{ idea.category }}</td>
+                <td>{{ idea.createdAt ? idea.createdAt|date('Y-m-d H:i:s') : '' }}</td>
+                <td>
+                    <a href="{{ path('app_tsk_show', {'id': idea.id}) }}">Voir</a>
+                    <a href="{{ path('app_tsk_edit', {'id': idea.id}) }}">Modifier</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="6">Aucune idée trouvée</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_tsk_new') }}">Créer une nouvelle idée</a>
+{% endblock %}
