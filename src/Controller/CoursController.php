@@ -17,7 +17,6 @@ use Symfony\Component\Routing\Attribute\Route;
 class CoursController extends AbstractController
 {
     // READ LIST COURS
-    // READ LIST COURS
     #[Route('/', name: 'app_cours_index', methods: ['GET'])]
     public function index(Request $request, CoursRepository $coursRepository): Response
     {
@@ -79,8 +78,9 @@ class CoursController extends AbstractController
                         $this->getParameter('kernel.project_dir') . '/public/uploads/cours',
                         $newFilename
                     );
-                } catch (\Symfony\Component\HttpFoundation\File\Exception\FileException $e) {
-                    // Handle error
+                } catch (\Symfony\Component\HttpFoundation\File\Exception\FileException) {
+                    // Gestion des erreurs d'upload
+                    $this->addFlash('error', 'Erreur lors de l\'upload de l\'image.');
                 }
 
                 // Store relative path or filename
@@ -145,18 +145,29 @@ class CoursController extends AbstractController
                         $this->getParameter('kernel.project_dir') . '/public/uploads/cours',
                         $newFilename
                     );
-                } catch (\Symfony\Component\HttpFoundation\File\Exception\FileException $e) {
-                    // Handle error
+                } catch (\Symfony\Component\HttpFoundation\File\Exception\FileException) {
+                    // Gestion des erreurs d'upload
+                    $this->addFlash('error', 'Erreur lors de l\'upload de l\'image.');
                 }
 
                 $cours->setImage('/uploads/cours/' . $newFilename);
             }
-            
+
             // sauvegarde de la categorie
             $coursRepository->save($cours, true);
+
+            // Message de succès
+            $this->addFlash('success', 'Le cours a été modifié avec succès !');
+
             // redirection vers liste des cours
             return $this->redirectToRoute('app_cours_index', [], Response::HTTP_SEE_OTHER);
         }
+
+        // Si le formulaire a été soumis mais n'est pas valide, afficher un message d'erreur
+        if ($form->isSubmitted() && !$form->isValid()) {
+            $this->addFlash('error', 'Le formulaire contient des erreurs. Veuillez vérifier les champs en rouge.');
+        }
+
         // affichage du formulaire de modification de cours
         return $this->render('back/cours/edit.html.twig', [
             'cours' => $cours,

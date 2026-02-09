@@ -11,7 +11,7 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class AdminController extends AbstractController
 {
-    #[Route('/admin', name: 'app_admin')]
+    #[Route('/admin/legacy', name: 'app_admin_legacy')]
     public function index(UsersRepository $userRepository): Response
     {
         $users = $userRepository->findAll();

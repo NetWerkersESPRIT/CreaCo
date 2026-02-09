@@ -57,19 +57,19 @@
 										<td class="p-2 align-middle bg-transparent border-b whitespace-nowrap shadow-transparent text-center">
 											<span class="text-xs font-semibold leading-tight text-slate-400">{{ categorie_cour.dateDeCreation ? categorie_cour.dateDeCreation|date('d/m/Y H:i') : '-' }}</span>
 										</td>
-										<td class="p-2 text-center align-middle bg-transparent border-b whitespace-nowrap shadow-transparent">
-											<div class="flex justify-center gap-2">
-												<a href="{{ path('app_categorie_cours_courses', {'id': categorie_cour.id}) }}" class="text-xs font-semibold leading-tight text-slate-400 bg-gray-100 px-3 py-1 rounded-lg">
+										<td class="p-2 text-center align-middle bg-transparent border-b shadow-transparent">
+											<div class="flex flex-col items-center gap-2">
+												<a href="{{ path('app_categorie_cours_courses', {'id': categorie_cour.id}) }}" class="text-xs font-semibold leading-tight text-slate-400 bg-gray-100 px-3 py-1 rounded-lg w-full text-center">
 													<i class="ni ni-zoom-split-in mr-1"></i>
 													Cours
 												</a>
-												<a href="{{ path('app_categorie_cours_edit', {'id': categorie_cour.id}) }}" class="text-xs font-semibold leading-tight text-slate-400 bg-gray-100 px-3 py-1 rounded-lg">
+												<a href="{{ path('app_categorie_cours_edit', {'id': categorie_cour.id}) }}" class="text-xs font-semibold leading-tight text-slate-400 bg-gray-100 px-3 py-1 rounded-lg w-full text-center">
 													<i class="ni ni-settings mr-1 text-xs"></i>
 													Edit
 												</a>
-												<form method="post" action="{{ path('app_categorie_cours_delete', {'id': categorie_cour.id}) }}" onsubmit="return confirm('Etes vous sur ?');" style="display:inline-block" novalidate>
+												<form method="post" action="{{ path('app_categorie_cours_delete', {'id': categorie_cour.id}) }}" onsubmit="return confirm('Etes vous sur ?');" class="w-full" novalidate>
 													<input type="hidden" name="_token" value="{{ csrf_token('delete' ~ categorie_cour.id) }}">
-													<button class="text-xs font-semibold leading-tight text-red-500 bg-gray-100 px-3 py-1 rounded-lg border-0 cursor-pointer">
+													<button class="text-xs font-semibold leading-tight text-red-500 bg-gray-100 px-3 py-1 rounded-lg border-0 cursor-pointer w-full">
 														<i class="ni ni-fat-delete mr-1"></i>
 														Delete
 													</button>

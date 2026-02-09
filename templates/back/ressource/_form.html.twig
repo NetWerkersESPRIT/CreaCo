@@ -2,7 +2,7 @@
 <div class="mb-4">
 	{{ form_label(form.nom, 'Nom de la ressource', {'label_attr': {'class': 'block mb-2 text-sm font-bold text-gray-700'}}) }}
 	{{ form_widget(form.nom, {'attr': {'class': 'focus:shadow-soft-primary-outline text-sm leading-5.6 block w-full appearance-none rounded-lg border border-solid border-gray-300 bg-white bg-clip-padding px-3 py-2 font-normal text-gray-700 outline-none transition-all placeholder:text-gray-500 focus:border-fuchsia-300 focus:outline-none'}}) }}
-	{{ form_errors(form.nom) }}
+	{{ form_errors(form.nom, {'attr': {'class': 'text-red-600 text-sm mt-1 block'}}) }}
 </div>
 
 <div class="mb-4">
@@ -15,20 +15,20 @@
 			</label>
 		{% endfor %}
 	</div>
-	{{ form_errors(form.nature) }}
+	{{ form_errors(form.nature, {'attr': {'class': 'text-red-600 text-sm mt-1 block'}}) }}
 </div>
 
 <div id="file-group" class="mb-4">
 	{{ form_label(form.fichier, 'Fichier (PDF, Image, Video)', {'label_attr': {'class': 'block mb-2 text-sm font-bold text-gray-700'}}) }}
 	{{ form_widget(form.fichier, {'attr': {'class': 'focus:shadow-soft-primary-outline text-sm leading-5.6 block w-full appearance-none rounded-lg border border-solid border-gray-300 bg-white bg-clip-padding px-3 py-2 font-normal text-gray-700 outline-none transition-all placeholder:text-gray-500 focus:border-fuchsia-300 focus:outline-none'}}) }}
 	<p class="mt-1 text-xs text-gray-500 italic">Formats acceptés : PDF, JPG, PNG, MP4</p>
-	{{ form_errors(form.fichier) }}
+	{{ form_errors(form.fichier, {'attr': {'class': 'text-red-600 text-sm mt-1 block'}}) }}
 </div>
 
 <div id="text-group" class="mb-4" style="display: none;">
 	{{ form_label(form.contenu, 'Contenu texte', {'label_attr': {'class': 'block mb-2 text-sm font-bold text-gray-700'}}) }}
 	{{ form_widget(form.contenu, {'attr': {'class': 'focus:shadow-soft-primary-outline text-sm leading-5.6 block w-full appearance-none rounded-lg border border-solid border-gray-300 bg-white bg-clip-padding px-3 py-2 font-normal text-gray-700 outline-none transition-all placeholder:text-gray-500 focus:border-fuchsia-300 focus:outline-none'}}) }}
-	{{ form_errors(form.contenu) }}
+	{{ form_errors(form.contenu, {'attr': {'class': 'text-red-600 text-sm mt-1 block'}}) }}
 </div>
 
 <script>
@@ -60,7 +60,7 @@ updateVisibility();
 	<div class="mb-4">
 		{{ form_label(form.cours, 'Cours associé', {'label_attr': {'class': 'block mb-2 text-sm font-bold text-gray-700'}}) }}
 		{{ form_widget(form.cours, {'attr': {'class': 'focus:shadow-soft-primary-outline text-sm leading-5.6 block w-full appearance-none rounded-lg border border-solid border-gray-300 bg-white bg-clip-padding px-3 py-2 font-normal text-gray-700 outline-none transition-all placeholder:text-gray-500 focus:border-fuchsia-300 focus:outline-none'}}) }}
-		{{ form_errors(form.cours) }}
+		{{ form_errors(form.cours, {'attr': {'class': 'text-red-600 text-sm mt-1 block'}}) }}
 	</div>
 {% endif %}
 

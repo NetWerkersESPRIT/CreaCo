@@ -21,6 +21,18 @@
         <h6>Modification de : <span class="text-fuchsia-500">{{ cours.titre }}</span></h6>
       </div>
       <div class="flex-auto p-6">
+        {# Débogage temporaire - à supprimer après test #}
+        {% if form.vars.submitted and not form.vars.valid %}
+            <div class="p-4 mb-4 text-sm text-red-800 bg-red-100 rounded-lg" role="alert">
+                <strong>⚠️ Le formulaire contient des erreurs :</strong>
+                <ul class="mt-2 list-disc list-inside">
+                    {% for error in form.vars.errors %}
+                        <li>{{ error.message }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+
         {{ include('back/cours/_form.html.twig', {'button_label': 'Mettre à jour le cours'}) }}
         
         <div class="mt-8 pt-6 border-t border-gray-100 flex items-center justify-between">

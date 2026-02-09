@@ -44,7 +44,6 @@ class Cours
     private ?string $description = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Assert\Url(message: "L'image doit être une URL valide")]
     private ?string $image = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
@@ -146,6 +145,7 @@ class Cours
             }
         }
 
+        return $this;
     }
 
     public function getDateDeCreation(): ?\DateTimeInterface

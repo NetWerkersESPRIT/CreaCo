@@ -28,11 +28,6 @@ class CategorieCours
         minMessage: "Le nom doit contenir au moins {{ limit }} caractères",
         maxMessage: "Le nom ne peut pas dépasser {{ limit }} caractères"
     )]
-    // Format du nom
-    #[Assert\Regex(
-        pattern: "/^[a-zA-Z0-9\s\-]+$/",
-        message: "Le nom ne peut contenir que des lettres, chiffres, espaces et tirets"
-    )]
     private ?string $nom = null;
 
     // DESCRIPTION DE LA CATEGORIE

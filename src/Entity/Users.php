@@ -33,8 +33,6 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 20, nullable: true)]
     private ?string $numtel = null;
 
-<<<<<<< HEAD
-=======
     #[ORM\Column(nullable: true)]
     private ?int $managerId = null;
 
@@ -86,8 +84,6 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
         $this->contracts = new ArrayCollection();
         $this->addedCollaborators = new ArrayCollection();
     }
-
->>>>>>> main
     public function getId(): ?int
     {
         return $this->id;
@@ -190,9 +186,6 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
-<<<<<<< HEAD
-=======
-
     public function getManagerId(): ?int
     {
         return $this->managerId;
@@ -393,5 +386,4 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
         }
         return $this;
     }
->>>>>>> main
 }
