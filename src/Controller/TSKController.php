@@ -44,7 +44,17 @@ final class TSKController extends AbstractController
             $entityManager->persist($idea);
             $entityManager->flush();
 
-            $this->addFlash('success', 'Idée créée avec succès !');
+            $this->addFlash('success', 'Idée crée avec succès !');
+
+            // Handle redirect back to mission if requested
+            if ($request->query->get('from_mission')) {
+                return $this->redirectToRoute('app_mission_new', [
+                    'idea_id' => $idea->getId(),
+                    'm_title' => $request->query->get('m_title'),
+                    'm_desc' => $request->query->get('m_desc'),
+                    'm_state' => $request->query->get('m_state'),
+                ]);
+            }
 
             return $this->redirectToRoute('app_tsk_index', [], Response::HTTP_SEE_OTHER);
         }

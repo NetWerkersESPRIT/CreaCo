@@ -46,6 +46,7 @@ class Idea
     #[ORM\OneToMany(targetEntity: Mission::class, mappedBy: 'implementIdea')]
     private Collection $missions;
 
+
     public function __construct()
     {
         $this->usedBy = new ArrayCollection();
@@ -182,4 +183,5 @@ class Idea
 
         return $this;
     }
+
 }

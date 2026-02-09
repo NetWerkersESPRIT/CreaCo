@@ -62,7 +62,7 @@ class TaskType extends AbstractType
                 'class' => Users::class,
                 'choice_label' => 'username',
                 'label' => 'Assigné à',
-                'placeholder' => 'Choisir un utilisateur',
+                'placeholder' => 'Choisir un éditeur',
                 'required' => false,
             ])
         ;

@@ -26,6 +26,16 @@ final class TaskController extends AbstractController
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $task = new Task();
+
+        // Pre-fill Mission if provided in the query string
+        $missionId = $request->query->get('mission_id');
+        if ($missionId) {
+            $mission = $entityManager->getRepository(\App\Entity\Mission::class)->find($missionId);
+            if ($mission) {
+                $task->setBelongTo($mission);
+            }
+        }
+
         $form = $this->createForm(TaskType::class, $task);
         $form->handleRequest($request);
 
@@ -41,7 +51,7 @@ final class TaskController extends AbstractController
             $entityManager->persist($task);
             $entityManager->flush();
 
-            $this->addFlash('success', 'Tâche créée avec succès !');
+            $this->addFlash('success', 'Tâche crée avec succès !');
 
             return $this->redirectToRoute('app_task_index', [], Response::HTTP_SEE_OTHER);
         }

@@ -28,6 +28,27 @@ final class MissionController extends AbstractController
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $mission = new Mission();
+
+        // Pre-fill Idea if provided in the query string
+        $ideaId = $request->query->get('idea_id');
+        if ($ideaId) {
+            $idea = $entityManager->getRepository(\App\Entity\Idea::class)->find($ideaId);
+            if ($idea) {
+                $mission->setImplementIdea($idea);
+            }
+        }
+
+        // Restore other field data if returning from Idea creation
+        if ($request->query->has('m_title')) {
+            $mission->setTitle($request->query->get('m_title'));
+        }
+        if ($request->query->has('m_desc')) {
+            $mission->setDescription($request->query->get('m_desc'));
+        }
+        if ($request->query->has('m_state')) {
+            $mission->setState($request->query->get('m_state'));
+        }
+
         $form = $this->createForm(MissionType::class, $mission);
         $form->handleRequest($request);
 
@@ -43,7 +64,7 @@ final class MissionController extends AbstractController
             $entityManager->persist($mission);
             $entityManager->flush();
 
-            $this->addFlash('success', 'Mission créée avec succès !');
+            $this->addFlash('success', 'Mission crée avec succès !');
 
             return $this->redirectToRoute('app_mission_index', [], Response::HTTP_SEE_OTHER);
         }
