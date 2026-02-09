@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\UsersRepository;
+use App\Entity\Mission;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -47,10 +48,47 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Comment::class, mappedBy: 'user', cascade: ['remove'])]
     private Collection $comments;
 
+    /**
+     * @var Collection<int, Idea>
+     */
+    #[ORM\OneToMany(targetEntity: Idea::class, mappedBy: 'creator')]
+    private Collection $ideas;
+
+    /**
+     * @var Collection<int, Idea>
+     */
+    #[ORM\ManyToMany(targetEntity: Idea::class, mappedBy: 'usedBy')]
+    private Collection $ideasUsed;
+
+    /**
+     * @var Collection<int, Mission>
+     */
+    #[ORM\OneToMany(targetEntity: Mission::class, mappedBy: 'assignedBy')]
+    private Collection $missionsCreated;
+
+    /**
+     * @var Collection<int, Task>
+     */
+    #[ORM\OneToMany(targetEntity: Task::class, mappedBy: 'issuedBy')]
+    private Collection $tasksIssued;
+
+    /**
+     * @var Collection<int, Task>
+     */
+    #[ORM\OneToMany(targetEntity: Task::class, mappedBy: 'assumedBy')]
+    private Collection $tasks;
+
+
+
     public function __construct()
     {
         $this->posts = new ArrayCollection();
         $this->comments = new ArrayCollection();
+        $this->ideas = new ArrayCollection();
+        $this->ideasUsed = new ArrayCollection();
+        $this->missionsCreated = new ArrayCollection();
+        $this->tasksIssued = new ArrayCollection();
+        $this->tasks = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -93,7 +131,7 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function eraseCredentials(): void
     {
-        
+
     }
 
     public function getEmail(): ?string
@@ -177,7 +215,7 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
     public function removePost(Post $post): static
     {
         if ($this->posts->removeElement($post)) {
-            
+
             if ($post->getUser() === $this) {
                 $post->setUser(null);
             }
@@ -207,7 +245,7 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
     public function removeComment(Comment $comment): static
     {
         if ($this->comments->removeElement($comment)) {
-            
+
             if ($comment->getUser() === $this) {
                 $comment->setUser(null);
             }
@@ -215,4 +253,153 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
+
+    /**
+     * @return Collection<int, Idea>
+     */
+    public function getIdeas(): Collection
+    {
+        return $this->ideas;
+    }
+
+    public function addIdea(Idea $idea): static
+    {
+        if (!$this->ideas->contains($idea)) {
+            $this->ideas->add($idea);
+            $idea->setCreator($this);
+        }
+
+        return $this;
+    }
+
+    public function removeIdea(Idea $idea): static
+    {
+        if ($this->ideas->removeElement($idea)) {
+            // set the owning side to null (unless already changed)
+            if ($idea->getCreator() === $this) {
+                $idea->setCreator(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Idea>
+     */
+    public function getIdeasUsed(): Collection
+    {
+        return $this->ideasUsed;
+    }
+
+    public function addIdeasUsed(Idea $ideasUsed): static
+    {
+        if (!$this->ideasUsed->contains($ideasUsed)) {
+            $this->ideasUsed->add($ideasUsed);
+            $ideasUsed->addUsedBy($this);
+        }
+
+        return $this;
+    }
+
+    public function removeIdeasUsed(Idea $ideasUsed): static
+    {
+        if ($this->ideasUsed->removeElement($ideasUsed)) {
+            $ideasUsed->removeUsedBy($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Mission>
+     */
+    public function getMissionsCreated(): Collection
+    {
+        return $this->missionsCreated;
+    }
+
+    public function addMissionsCreated(Mission $missionsCreated): static
+    {
+        if (!$this->missionsCreated->contains($missionsCreated)) {
+            $this->missionsCreated->add($missionsCreated);
+            $missionsCreated->setAssignedBy($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMissionsCreated(Mission $missionsCreated): static
+    {
+        if ($this->missionsCreated->removeElement($missionsCreated)) {
+            // set the owning side to null (unless already changed)
+            if ($missionsCreated->getAssignedBy() === $this) {
+                $missionsCreated->setAssignedBy(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Task>
+     */
+    public function getTasksIssued(): Collection
+    {
+        return $this->tasksIssued;
+    }
+
+    public function addTasksIssued(Task $tasksIssued): static
+    {
+        if (!$this->tasksIssued->contains($tasksIssued)) {
+            $this->tasksIssued->add($tasksIssued);
+            $tasksIssued->setIssuedBy($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTasksIssued(Task $tasksIssued): static
+    {
+        if ($this->tasksIssued->removeElement($tasksIssued)) {
+            // set the owning side to null (unless already changed)
+            if ($tasksIssued->getIssuedBy() === $this) {
+                $tasksIssued->setIssuedBy(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Task>
+     */
+    public function getTasks(): Collection
+    {
+        return $this->tasks;
+    }
+
+    public function addTask(Task $task): static
+    {
+        if (!$this->tasks->contains($task)) {
+            $this->tasks->add($task);
+            $task->setAssumedBy($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTask(Task $task): static
+    {
+        if ($this->tasks->removeElement($task)) {
+            // set the owning side to null (unless already changed)
+            if ($task->getAssumedBy() === $this) {
+                $task->setAssumedBy(null);
+            }
+        }
+
+        return $this;
+    }
+
+
 }
